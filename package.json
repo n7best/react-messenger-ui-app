@@ -1,0 +1,25 @@
+{
+  "name": "react-messenger-ui-app",
+  "version": "0.0.1",
+  "description": "A chat example to showcase react-messenger-ui.",
+  "main": "server.js",
+  "repository": "",
+  "author": "n7best",
+  "dependencies": {
+    "async": "~0.2.8",
+    "body-parser": "^1.18.2",
+    "config": "^1.28.1",
+    "express": "^4.16.2",
+    "react-messenger-ui": "0.0.2",
+    "react-router": "^4.2.0",
+    "request": "^2.83.0",
+    "socket.io": "~0.9.14"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
+  }
+}
