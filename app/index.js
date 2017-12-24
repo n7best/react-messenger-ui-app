@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import request from 'request';
 import verifyRequestSignature from './utils/verifyRequestSignature';
-import render from './views';
+import render from './bot';
 
 class UIBOT {
   constructor(server, credentials){
@@ -88,7 +88,7 @@ class UIBOT {
       return this.render('/echo', { recipient: event.sender, ...message })
     } else if (message.quick_reply) {
       this.log("Quick reply for message %s with payload %s", message.mid, message.quick_reply);
-      return this.render('/quickreply', { recipient: event.sender, ...message.quick_reply })
+      return this.render('/quickreply', { recipient: event.sender, ...message })
     }
 
     if (message.text) {
