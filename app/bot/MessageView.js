@@ -1,5 +1,5 @@
 import React from 'react';
-import { Message, Text, ButtonTemplate, GenericTemplate, GenericElement,
+import { Message, Text, ButtonTemplate, GenericTemplate, GenericElement, ListTemplate, ListElement,
 URLButton, PostbackButton, CallButton, Attachment, QuickReply, CONSTANTS } from 'react-messenger-ui';
 
 const MessageView = (props) => {
@@ -108,6 +108,35 @@ const MessageView = (props) => {
               </PostbackButton>
             </GenericElement>
           </GenericTemplate>
+        </Message>
+      )
+
+    case 'list':
+      return (
+        <Message recipient={recipient}>
+          <ListTemplate>
+            <ListElement
+              title="rift"
+              subtitle="next-generation virtual reality"
+              imageUrl="https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/rift.png?raw=true"
+            >
+              <URLButton url="https://www.oculus.com/en-us/rift/">
+                Open Web URL
+              </URLButton>
+            </ListElement>
+            <ListElement
+              title="touch"
+              subtitle="Your Hands, Now in VR"
+              imageUrl="https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/touch.png?raw=true"
+            >
+              <URLButton url="https://www.oculus.com/en-us/touch/">
+                Open Web URL
+              </URLButton>
+            </ListElement>
+            <URLButton url="https://www.oculus.com/en-us/touch/">
+              Open Web URL
+            </URLButton>
+          </ListTemplate>
         </Message>
       )
 
