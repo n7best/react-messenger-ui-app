@@ -1,7 +1,7 @@
 import React from 'react';
 import { Message, Text, ButtonTemplate, GenericTemplate, GenericElement, ListTemplate, ListElement,
 ReceiptTemplate, ReceiptElement, Summary, Adjustment, Address, MediaTemplate, MediaElement, URLButton,
-PostbackButton, CallButton, Attachment, QuickReply, CONSTANTS } from 'react-messenger-ui';
+OpenGraphTemplate, OpenGraphElement, PostbackButton, CallButton, Attachment, QuickReply, CONSTANTS } from 'react-messenger-ui';
 
 const MessageView = (props) => {
 
@@ -194,6 +194,19 @@ const MessageView = (props) => {
               imageUrl="http://petersapparel.parseapp.com/img/grayshirt.png"
             />
           </ReceiptTemplate>
+        </Message>
+      )
+
+    case 'opengraph':
+      return (
+        <Message recipient={recipient}>
+          <OpenGraphTemplate>
+            <OpenGraphElement url="https://open.spotify.com/track/7GhIk7Il098yCjg4BQjzvb">
+              <URLButton url="https://en.wikipedia.org/wiki/Rickrolling">
+                View More
+              </URLButton>
+            </OpenGraphElement>
+          </OpenGraphTemplate>
         </Message>
       )
 
