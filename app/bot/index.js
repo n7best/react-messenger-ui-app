@@ -1,11 +1,13 @@
 import React from 'react';
 import { StaticRouter, Switch, Route } from 'react-router'
-import { render, Message, Text, ButtonTemplate, URLButton } from 'react-messenger-ui';
+import { render } from 'react-messenger-ui';
 
 // routes
 import MessageView from './MessageView';
 import NotFoundView from './404';
 import QuickreplyView from './QuickreplyView';
+import TryFeaturesView from './TryFeaturesView';
+import BotMenu from './BotMenu';
 
 export default (path, props) => {
 
@@ -19,6 +21,8 @@ export default (path, props) => {
       <Switch>
         <PropRoute path="/message" component={MessageView} />
         <PropRoute path="/quickreply" component={QuickreplyView} />
+        <PropRoute path="/tryfeatures" component={TryFeaturesView} />
+        <PropRoute path="/menu" component={BotMenu} />
         <PropRoute component={NotFoundView} />
       </Switch>
     </StaticRouter>

@@ -4,8 +4,11 @@ import verifyRequestSignature from './utils/verifyRequestSignature';
 import render from './bot';
 
 class UIBOT {
-  constructor(server, credentials){
+  constructor(server, credentials, configs){
     this.credentials = credentials;
+    this.cfg = Object.assign({
+      get_start_path: 'BOTPATH:/hi'
+    }, configs);
     this.server = server;
     this.server.use(bodyParser.json({
       verify: verifyRequestSignature(this)
@@ -20,10 +23,21 @@ class UIBOT {
     this.server.post('/webhook', this.webhookPostController.bind(this));
   }
 
+  initMessenger(){
+    // send menu
+    this.log('Setting menu for the bot');
+    this.profile(Object.assign({
+      get_started: {
+        payload: this.cfg.get_start_path
+      }
+    }, render('/menu')));
+  }
+
   start() {
     this.server.set('port', process.env.PORT || 5000);
     this.server.listen(this.server.get('port'), () => {
       this.log('Node server is running on port', this.server.get('port'));
+      this.initMessenger();
     });
   }
 
@@ -62,7 +76,7 @@ class UIBOT {
           } else if (messagingEvent.delivery) {
             // receivedDeliveryConfirmation(messagingEvent);
           } else if (messagingEvent.postback) {
-            // receivedPostback(messagingEvent);
+            this.postbackHandler(messagingEvent);
           } else if (messagingEvent.read) {
             // receivedMessageRead(messagingEvent);
           } else if (messagingEvent.account_linking) {
@@ -78,6 +92,21 @@ class UIBOT {
     }
   }
 
+  navigate(payload, sender){
+    //check if it's bot path
+    if (payload.substring(0, 8) == "BOTPATH:") {
+      let botpath = payload.substring(8);
+      this.render(botpath, { recipient: sender })
+    }else{
+      this.render('/message', { recipient: sender, text: payload })
+    }
+  }
+
+  postbackHandler(event){
+    this.logPostback(event);
+    this.navigate(event.postback.payload, event.sender);
+  }
+
   messageHandler(event){
     this.logMessage(event);
     const message = event.message;
@@ -88,7 +117,7 @@ class UIBOT {
       return this.render('/echo', { recipient: event.sender, ...message })
     } else if (message.quick_reply) {
       this.log("Quick reply for message %s with payload %s", message.mid, message.quick_reply);
-      return this.render('/quickreply', { recipient: event.sender, ...message })
+      return this.navigate(message.quick_reply.payload, event.sender);
     }
 
     if (message.text) {
@@ -105,6 +134,15 @@ class UIBOT {
     const message = event.message;
 
     this.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage, JSON.stringify(message));
+  }
+
+  logPostback(event){
+    const senderID = event.sender.id;
+    const recipientID = event.recipient.id;
+    const timeOfMessage = event.timestamp;
+    const payload = event.postback.payload;
+
+    this.log("Received postback for user %d and page %d at %d with postback:", senderID, recipientID, timeOfMessage, JSON.stringify(payload));
   }
 
   log(...args){
@@ -130,6 +168,21 @@ class UIBOT {
         }
       } else {
         this.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+      }
+    });
+  }
+
+  profile(data) {
+    request({
+      uri: 'https://graph.facebook.com/v2.6/me/messenger_profile',
+      qs: { access_token: this.credentials.PAGE_ACCESS_TOKEN },
+      method: 'POST',
+      json: data
+    }, (error, response, body) => {
+      if (!error && response.statusCode == 200 && body.result === 'success') {
+        this.log("Successfully update profile with", data);
+      } else {
+        this.error("Failed calling Profile API", response.statusCode, response.statusMessage, body.error);
       }
     });
   }

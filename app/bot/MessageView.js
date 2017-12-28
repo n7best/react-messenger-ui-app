@@ -80,6 +80,7 @@ const MessageView = (props) => {
         </Message>
       )
 
+    case 'generic template':
     case 'generic':
       return (
         <Message recipient={recipient}>
