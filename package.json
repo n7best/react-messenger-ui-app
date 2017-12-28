@@ -5,6 +5,11 @@
   "main": "server.js",
   "repository": "",
   "author": "n7best",
+  "scripts": {
+    "start": "node build/server.js",
+    "build": "NODE_ENV=production babel app -d build/app && NODE_ENV=production babel server.js -d build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "async": "~0.2.8",
     "body-parser": "^1.18.2",
