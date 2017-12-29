@@ -39,6 +39,14 @@ class Footer extends React.Component {
               }>
               Learn Basic
             </a>
+            <a
+              href={
+                this.props.config.baseUrl +
+                'docs/' +
+                'privacy.html'
+              }>
+              Privacy Policy
+            </a>
           </div>
           <div>
             <h5>Community</h5>
