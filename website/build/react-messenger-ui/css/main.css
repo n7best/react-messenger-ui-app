@@ -1825,3 +1825,23 @@ footer .copyright {
 
 @media only screen and (min-width: 1500px) {
 }
+
+.container .wrapper h2 {
+    font-size: 32px;
+}
+
+.hljs {
+    background: #fff;
+}
+
+code {
+    box-shadow: none;
+}
+
+.blockImage {
+    display: flex;
+}
+
+.blockImage img {
+    align-self: center;
+}

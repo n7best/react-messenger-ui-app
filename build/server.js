@@ -1,5 +1,9 @@
 'use strict';
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 var _config = require('config');
 
 var _config2 = _interopRequireDefault(_config);
@@ -28,5 +32,8 @@ if (!(CREDENTIAL.APP_SECRET && CREDENTIAL.VALIDATION_TOKEN && CREDENTIAL.PAGE_AC
 
 // app
 var bot = new _app2.default((0, _express2.default)(), CREDENTIAL);
+
+// static docs
+bot.server.use(_express2.default.static(_path2.default.join(__dirname, '../website/build/react-messenger-ui')));
 
 bot.start();

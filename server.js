@@ -1,3 +1,4 @@
+import path from 'path';
 import config from 'config';
 import express from 'express';
 import UIBOT from './app';
@@ -16,5 +17,8 @@ if (!(CREDENTIAL.APP_SECRET && CREDENTIAL.VALIDATION_TOKEN && CREDENTIAL.PAGE_AC
 
 // app
 const bot = new UIBOT(express(), CREDENTIAL);
+
+// static docs
+bot.server.use(express.static(path.join(__dirname, '../website/build/react-messenger-ui')));
 
 bot.start();
