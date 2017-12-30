@@ -11,7 +11,7 @@ const MessageView = (props) => {
     case 'image':
       return (
         <Message recipient={recipient}>
-          <Attachment url="https://github.com/n7best/react-messenger-ui/blob/master/website/static/img/logo.png?raw=true" />
+          <Attachment url="https://react-messenger-ui.herokuapp.com/img/logo.png" />
         </Message>
       )
 

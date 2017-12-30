@@ -22,7 +22,7 @@ var MessageView = function MessageView(props) {
       return _react2.default.createElement(
         _reactMessengerUi.Message,
         { recipient: recipient },
-        _react2.default.createElement(_reactMessengerUi.Attachment, { url: 'https://github.com/n7best/react-messenger-ui/blob/master/website/static/img/logo.png?raw=true' })
+        _react2.default.createElement(_reactMessengerUi.Attachment, { url: 'https://react-messenger-ui.herokuapp.com/img/logo.png' })
       );
 
     case 'gif':

@@ -141,14 +141,17 @@ class AwesomeChatBot extends Component {
     return (
       <Message recipient={{ id: '<PSID>' }}>
         <ButtonTemplate>
-            hello
-          <URLButton url="magic link">
-            world
-          </URLButton>
-          <PostbackButton payload="magic payload">
-            world
-          </PostbackButton>
-        </ButtonTemplate>
+            This is test text
+            <URLButton url="https://www.oculus.com/en-us/rift/">
+              Open Web URL
+            </URLButton>
+            <PostbackButton payload="BOTPATH:/home">
+              Trigger Postback
+            </PostbackButton>
+            <CallButton payload="+16505551234">
+              Call Phone Number
+            </CallButton>
+          </ButtonTemplate>
       </Message>
     );
   }
