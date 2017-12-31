@@ -43,9 +43,19 @@ class UIBOT {
 
   render(path, props){
     this.log('Render:', path, props);
+    // typing on
+    this.sender(
+      render('/typing', { recipient: props.recipient, typing: true })
+    );
     let res = render(path, props);
+    render(path, props);
     this.log('||| render:', res);
     this.send(res);
+
+    // typing off
+    this.sender(
+      render('/typing', { recipient: props.recipient, typing: false })
+    );
   }
 
   webhookGetController(req, res){

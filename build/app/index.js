@@ -77,9 +77,15 @@ var UIBOT = function () {
     key: 'render',
     value: function render(path, props) {
       this.log('Render:', path, props);
+      // typing on
+      this.sender((0, _bot2.default)('/typing', { recipient: props.recipient, typing: true }));
       var res = (0, _bot2.default)(path, props);
+      (0, _bot2.default)(path, props);
       this.log('||| render:', res);
       this.send(res);
+
+      // typing off
+      this.sender((0, _bot2.default)('/typing', { recipient: props.recipient, typing: false }));
     }
   }, {
     key: 'webhookGetController',

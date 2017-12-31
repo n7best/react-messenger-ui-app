@@ -42,6 +42,10 @@ var _NewuserView = require('./NewuserView');
 
 var _NewuserView2 = _interopRequireDefault(_NewuserView);
 
+var _Typing = require('./Typing');
+
+var _Typing2 = _interopRequireDefault(_Typing);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -73,6 +77,7 @@ exports.default = function (path, props) {
       _react2.default.createElement(PropRoute, { path: '/menu', component: _BotMenu2.default }),
       _react2.default.createElement(PropRoute, { path: '/authsuccess', component: _AuthSuccessful2.default }),
       _react2.default.createElement(PropRoute, { path: '/newuser', component: _NewuserView2.default }),
+      _react2.default.createElement(PropRoute, { path: '/typing', component: _Typing2.default }),
       _react2.default.createElement(PropRoute, { component: _2.default })
     )
   ));
