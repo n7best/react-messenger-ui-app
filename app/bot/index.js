@@ -8,6 +8,8 @@ import NotFoundView from './404';
 import QuickreplyView from './QuickreplyView';
 import TryFeaturesView from './TryFeaturesView';
 import BotMenu from './BotMenu';
+import AuthSuccessful from './AuthSuccessful';
+import NewuserView from './NewuserView';
 
 export default (path, props) => {
 
@@ -23,6 +25,8 @@ export default (path, props) => {
         <PropRoute path="/quickreply" component={QuickreplyView} />
         <PropRoute path="/tryfeatures" component={TryFeaturesView} />
         <PropRoute path="/menu" component={BotMenu} />
+        <PropRoute path="/authsuccess" component={AuthSuccessful} />
+        <PropRoute path="/newuser" component={NewuserView} />
         <PropRoute component={NotFoundView} />
       </Switch>
     </StaticRouter>

@@ -7,7 +7,7 @@ class UIBOT {
   constructor(server, credentials, configs){
     this.credentials = credentials;
     this.cfg = Object.assign({
-      get_start_path: 'BOTPATH:/hi'
+      get_start_path: 'BOTPATH:/newuser'
     }, configs);
     this.server = server;
     this.server.use(bodyParser.json({
@@ -71,18 +71,44 @@ class UIBOT {
         pageEntry.messaging.forEach((messagingEvent) => {
           if (messagingEvent.optin) {
             // receivedAuthentication(messagingEvent);
+            const senderID = messagingEvent.sender.id;
+            const recipientID = messagingEvent.recipient.id;
+            const timeOfAuth = messagingEvent.timestamp;
+            const passThroughParam = messagingEvent.optin.ref;
+
+            this.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
+            this.render('/authsucess', { recipient: messagingEvent.sender })
           } else if (messagingEvent.message) {
             this.messageHandler(messagingEvent);
           } else if (messagingEvent.delivery) {
-            // receivedDeliveryConfirmation(messagingEvent);
+            const delivery = messagingEvent.delivery;
+            const messageIDs = delivery.mids;
+            const watermark = delivery.watermark;
+
+            if (messageIDs) {
+              messageIDs.forEach((messageID) => this.log("Received delivery confirmation for message ID: %s", messageID));
+            }
+
+            this.log("All message before %d were delivered.", watermark);
           } else if (messagingEvent.postback) {
             this.postbackHandler(messagingEvent);
           } else if (messagingEvent.read) {
-            // receivedMessageRead(messagingEvent);
+            // All messages before watermark (a timestamp) or sequence have been seen.
+            const watermark = messagingEvent.read.watermark;
+            const sequenceNumber = messagingEvent.read.seq;
+
+            this.log("Received message read event for watermark %d and sequence number %d", watermark, sequenceNumber);
           } else if (messagingEvent.account_linking) {
-            // receivedAccountLink(messagingEvent);
+            const senderID = messagingEvent.sender.id;
+            const status = messagingEvent.account_linking.status;
+            const authCode = messagingEvent.account_linking.authorization_code;
+
+            this.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
+          } else if(typeof messagingEvent['policy-enforcement'] !== 'undefined'){
+            let policy = messagingEvent['policy-enforcement'];
+            this.log("Policy-Enforcement: ", policy.action, policy.reason);
           } else {
-            console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+            this.log("Webhook received unknown messagingEvent: ", messagingEvent);
           }
         });
       });
