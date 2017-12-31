@@ -34,7 +34,7 @@ var UIBOT = function () {
 
     this.credentials = credentials;
     this.cfg = Object.assign({
-      get_start_path: 'BOTPATH:/hi'
+      get_start_path: 'BOTPATH:/newuser'
     }, configs);
     this.server = server;
     this.server.use(_bodyParser2.default.json({
@@ -108,18 +108,46 @@ var UIBOT = function () {
           pageEntry.messaging.forEach(function (messagingEvent) {
             if (messagingEvent.optin) {
               // receivedAuthentication(messagingEvent);
+              var senderID = messagingEvent.sender.id;
+              var recipientID = messagingEvent.recipient.id;
+              var timeOfAuth = messagingEvent.timestamp;
+              var passThroughParam = messagingEvent.optin.ref;
+
+              _this2.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
+              _this2.render('/authsucess', { recipient: messagingEvent.sender });
             } else if (messagingEvent.message) {
               _this2.messageHandler(messagingEvent);
             } else if (messagingEvent.delivery) {
-              // receivedDeliveryConfirmation(messagingEvent);
+              var delivery = messagingEvent.delivery;
+              var messageIDs = delivery.mids;
+              var watermark = delivery.watermark;
+
+              if (messageIDs) {
+                messageIDs.forEach(function (messageID) {
+                  return _this2.log("Received delivery confirmation for message ID: %s", messageID);
+                });
+              }
+
+              _this2.log("All message before %d were delivered.", watermark);
             } else if (messagingEvent.postback) {
               _this2.postbackHandler(messagingEvent);
             } else if (messagingEvent.read) {
-              // receivedMessageRead(messagingEvent);
+              // All messages before watermark (a timestamp) or sequence have been seen.
+              var _watermark = messagingEvent.read.watermark;
+              var sequenceNumber = messagingEvent.read.seq;
+
+              _this2.log("Received message read event for watermark %d and sequence number %d", _watermark, sequenceNumber);
             } else if (messagingEvent.account_linking) {
-              // receivedAccountLink(messagingEvent);
+              var _senderID = messagingEvent.sender.id;
+              var status = messagingEvent.account_linking.status;
+              var authCode = messagingEvent.account_linking.authorization_code;
+
+              _this2.log("Received account link event with for user %d with status %s and auth code %s ", _senderID, status, authCode);
+            } else if (typeof messagingEvent['policy-enforcement'] !== 'undefined') {
+              var policy = messagingEvent['policy-enforcement'];
+              _this2.log("Policy-Enforcement: ", policy.action, policy.reason);
             } else {
-              console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+              _this2.log("Webhook received unknown messagingEvent: ", messagingEvent);
             }
           });
         });
