@@ -44,7 +44,7 @@ class UIBOT {
   render(path, props){
     this.log('Render:', path, props);
     // typing on
-    this.sender(
+    this.send(
       render('/typing', { recipient: props.recipient, typing: true })
     );
     let res = render(path, props);
@@ -53,7 +53,7 @@ class UIBOT {
     this.send(res);
 
     // typing off
-    this.sender(
+    this.send(
       render('/typing', { recipient: props.recipient, typing: false })
     );
   }
