@@ -214,8 +214,9 @@ const MessageView = (props) => {
 
     default:
       let reply = getRepliesByKey(text)
+      console.log('found reply', reply);
       if(reply){
-        console.log('found reply', reply);
+
 
         try {
           return (
