@@ -275,15 +275,28 @@ var MessageView = function MessageView(props) {
       var reply = (0, _db.getRepliesByKey)(text);
       if (reply) {
         console.log('found reply', reply);
-        return _react2.default.createElement(
-          _reactMessengerUi.Message,
-          { recipient: recipient },
-          _react2.default.createElement(
-            _reactMessengerUi.Text,
-            null,
-            text
-          )
-        );
+
+        try {
+          return _react2.default.createElement(
+            _reactMessengerUi.Message,
+            { recipient: recipient },
+            _react2.default.createElement(
+              _reactMessengerUi.Text,
+              null,
+              reply.response
+            )
+          );
+        } catch (e) {
+          return _react2.default.createElement(
+            _reactMessengerUi.Message,
+            { recipient: recipient },
+            _react2.default.createElement(
+              _reactMessengerUi.Text,
+              null,
+              text
+            )
+          );
+        }
       } else {
         return _react2.default.createElement(
           _reactMessengerUi.Message,

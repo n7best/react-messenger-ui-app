@@ -216,11 +216,20 @@ const MessageView = (props) => {
       let reply = getRepliesByKey(text)
       if(reply){
         console.log('found reply', reply);
-        return (
-          <Message recipient={recipient}>
-            <Text>{ text }</Text>
-          </Message>
-        );
+
+        try {
+          return (
+            <Message recipient={recipient}>
+              <Text>{ reply.response }</Text>
+            </Message>
+          );
+        } catch(e) {
+          return (
+            <Message recipient={recipient}>
+              <Text>{ text }</Text>
+            </Message>
+          );
+        }
       }else{
         return (
           <Message recipient={recipient}>
