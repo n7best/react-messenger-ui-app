@@ -34,3 +34,11 @@ code {
 .blockImage img {
     align-self: center;
 }
+
+.web-player iframe {
+    margin-left: 0;
+}
+
+.web-player pre {
+    display: none;
+}

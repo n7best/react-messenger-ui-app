@@ -120,7 +120,11 @@ var UIBOT = function () {
               var passThroughParam = messagingEvent.optin.ref;
 
               _this2.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
-              _this2.render('/authsucess', { recipient: messagingEvent.sender });
+              if (passThroughParam) {
+                _this2.render('/message', { recipient: messagingEvent.sender, text: passThroughParam });
+              } else {
+                _this2.render('/authsuccess', { recipient: messagingEvent.sender });
+              }
             } else if (messagingEvent.message) {
               _this2.messageHandler(messagingEvent);
             } else if (messagingEvent.delivery) {

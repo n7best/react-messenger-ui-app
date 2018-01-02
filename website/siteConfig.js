@@ -1,9 +1,4 @@
-/**
- * Copyright (c) 2017-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
+const RemarkablePlugins = require('./core/RemarkablePlugins');
 
 /* List of projects/orgs using your project for the users page */
 const users = [
@@ -44,6 +39,9 @@ const siteConfig = {
     ' n7best',
   // organizationName: 'deltice', // or set an env variable ORGANIZATION_NAME
   // projectName: 'test-site', // or set an env variable PROJECT_NAME
+  markdownPlugins: [
+    RemarkablePlugins.BotWebPlayer,
+  ],
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks
     theme: 'atom-one-light',
