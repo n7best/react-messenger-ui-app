@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import request from 'request';
 import verifyRequestSignature from './utils/verifyRequestSignature';
 import render from './bot';
+import db from './db';
 
 class UIBOT {
   constructor(server, credentials, configs){

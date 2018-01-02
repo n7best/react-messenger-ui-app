@@ -2,6 +2,7 @@ import React from 'react';
 import { Message, Text, ButtonTemplate, GenericTemplate, GenericElement, ListTemplate, ListElement,
 ReceiptTemplate, ReceiptElement, Summary, Adjustment, Address, MediaTemplate, MediaElement, URLButton,
 OpenGraphTemplate, OpenGraphElement, PostbackButton, CallButton, Attachment, QuickReply, CONSTANTS } from 'react-messenger-ui';
+import { getRepliesByKey } from '../db';
 
 const MessageView = (props) => {
 
@@ -212,11 +213,22 @@ const MessageView = (props) => {
       )
 
     default:
-      return (
-        <Message recipient={recipient}>
-          <Text>{ text }</Text>
-        </Message>
-      );
+      let reply = getRepliesByKey(text)
+      if(reply){
+        console.log('found reply', reply);
+        return (
+          <Message recipient={recipient}>
+            <Text>{ text }</Text>
+          </Message>
+        );
+      }else{
+        return (
+          <Message recipient={recipient}>
+            <Text>{ text }</Text>
+          </Message>
+        );
+      }
+
   }
 }
 

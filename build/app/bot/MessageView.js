@@ -10,6 +10,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactMessengerUi = require('react-messenger-ui');
 
+var _db = require('../db');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var MessageView = function MessageView(props) {
@@ -270,15 +272,30 @@ var MessageView = function MessageView(props) {
       );
 
     default:
-      return _react2.default.createElement(
-        _reactMessengerUi.Message,
-        { recipient: recipient },
-        _react2.default.createElement(
-          _reactMessengerUi.Text,
-          null,
-          text
-        )
-      );
+      var reply = (0, _db.getRepliesByKey)(text);
+      if (reply) {
+        console.log('found reply', reply);
+        return _react2.default.createElement(
+          _reactMessengerUi.Message,
+          { recipient: recipient },
+          _react2.default.createElement(
+            _reactMessengerUi.Text,
+            null,
+            text
+          )
+        );
+      } else {
+        return _react2.default.createElement(
+          _reactMessengerUi.Message,
+          { recipient: recipient },
+          _react2.default.createElement(
+            _reactMessengerUi.Text,
+            null,
+            text
+          )
+        );
+      }
+
   }
 };
 
