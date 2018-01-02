@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import bodyParser from 'body-parser';
 import request from 'request';
 import verifyRequestSignature from './utils/verifyRequestSignature';
