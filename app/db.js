@@ -29,6 +29,8 @@ export const getRepliesById = async (id) => {
   return await Reply.findAll({ where: { id } });
 };
 
-export const getRepliesByKey = async (key) => {
-  return await Reply.findAll({ where: { key } });
+export const getRepliesByKey = async (key, cb) => {
+  let result =  await Reply.findAll({ where: { key } });
+  if(cb) return cb(result);
+  return result;
 };

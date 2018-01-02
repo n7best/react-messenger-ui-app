@@ -4,7 +4,7 @@ ReceiptTemplate, ReceiptElement, Summary, Adjustment, Address, MediaTemplate, Me
 OpenGraphTemplate, OpenGraphElement, PostbackButton, CallButton, Attachment, QuickReply, CONSTANTS } from 'react-messenger-ui';
 import { getRepliesByKey } from '../db';
 
-const MessageView = (props) => {
+const MessageView = async (props) => {
 
   const { recipient, text } = props;
 
@@ -213,7 +213,7 @@ const MessageView = (props) => {
       )
 
     default:
-      let reply = getRepliesByKey(text)
+      let reply = await getRepliesByKey(text)
       console.log('found reply', reply);
       if(reply){
 
