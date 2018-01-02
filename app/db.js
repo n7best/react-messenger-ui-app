@@ -30,7 +30,7 @@ export const getRepliesById = async (id) => {
 };
 
 export const getRepliesByKey = async (key, cb) => {
-  let result =  await Reply.findAll({ where: { key } });
-  if(cb) return cb(result);
+  const result =  await Reply.findAll({ where: { key } });
+  console.log('dbop', result);
   return result;
 };

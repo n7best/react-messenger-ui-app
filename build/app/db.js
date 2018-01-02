@@ -86,7 +86,8 @@ var getRepliesById = exports.getRepliesById = function () {
 }();
 
 var getRepliesByKey = exports.getRepliesByKey = function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(key) {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(key, cb) {
+    var result;
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -95,9 +96,12 @@ var getRepliesByKey = exports.getRepliesByKey = function () {
             return Reply.findAll({ where: { key: key } });
 
           case 2:
-            return _context3.abrupt('return', _context3.sent);
+            result = _context3.sent;
 
-          case 3:
+            console.log('dbop', result);
+            return _context3.abrupt('return', result);
+
+          case 5:
           case 'end':
             return _context3.stop();
         }
@@ -105,7 +109,7 @@ var getRepliesByKey = exports.getRepliesByKey = function () {
     }, _callee3, undefined);
   }));
 
-  return function getRepliesByKey(_x2) {
+  return function getRepliesByKey(_x2, _x3) {
     return _ref3.apply(this, arguments);
   };
 }();

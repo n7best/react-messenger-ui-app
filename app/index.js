@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import request from 'request';
 import verifyRequestSignature from './utils/verifyRequestSignature';
 import render from './bot';
-import db from './db';
+import {getRepliesByKey} from './db';
 
 class UIBOT {
   constructor(server, credentials, configs){
@@ -43,13 +43,13 @@ class UIBOT {
     });
   }
 
-  render(path, props){
+  async render(path, props){
     this.log('Render:', path, props);
     // typing on
     this.send(
       render('/typing', { recipient: props.recipient, typing: true })
     );
-    let res = render(path, props);
+    let res = await render(path, props);
     render(path, props);
     this.log('||| render:', res);
     this.send(res);

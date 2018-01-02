@@ -216,8 +216,6 @@ const MessageView = async (props) => {
       let reply = await getRepliesByKey(text)
       console.log('found reply', reply);
       if(reply){
-
-
         try {
           return (
             <Message recipient={recipient}>
@@ -238,7 +236,6 @@ const MessageView = async (props) => {
           </Message>
         );
       }
-
   }
 }
 

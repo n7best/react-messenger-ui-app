@@ -28,9 +28,9 @@ var _bot2 = _interopRequireDefault(_bot);
 
 var _db = require('./db');
 
-var _db2 = _interopRequireDefault(_db);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -81,18 +81,43 @@ var UIBOT = function () {
     }
   }, {
     key: 'render',
-    value: function render(path, props) {
-      this.log('Render:', path, props);
-      // typing on
-      this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: true }));
-      var res = (0, _bot2.default)(path, props);
-      (0, _bot2.default)(path, props);
-      this.log('||| render:', res);
-      this.send(res);
+    value: function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(path, props) {
+        var res;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                this.log('Render:', path, props);
+                // typing on
+                this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: true }));
+                _context.next = 4;
+                return (0, _bot2.default)(path, props);
 
-      // typing off
-      this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: false }));
-    }
+              case 4:
+                res = _context.sent;
+
+                (0, _bot2.default)(path, props);
+                this.log('||| render:', res);
+                this.send(res);
+
+                // typing off
+                this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: false }));
+
+              case 9:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function render(_x, _x2) {
+        return _ref.apply(this, arguments);
+      }
+
+      return render;
+    }()
   }, {
     key: 'webhookGetController',
     value: function webhookGetController(req, res) {
