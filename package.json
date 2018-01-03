@@ -22,9 +22,7 @@
     "react-router": "^4.2.0",
     "request": "^2.83.0",
     "sequelize": "^4.28.6",
-    "socket.io": "~0.9.14"
-  },
-  "devDependencies": {
+    "socket.io": "~0.9.14",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-add-module-exports": "^0.2.1",
