@@ -43,13 +43,13 @@ class UIBOT {
     });
   }
 
-  async render(path, props){
+  render(path, props, direct = false){
     this.log('Render:', path, props);
     // typing on
     this.send(
       render('/typing', { recipient: props.recipient, typing: true })
     );
-    let res = await render(path, props);
+    let res = render(path, props);
     render(path, props);
     this.log('||| render:', res);
     this.send(res);
@@ -90,6 +90,11 @@ class UIBOT {
 
             this.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
             if(passThroughParam){
+              let autoReply = getRepliesByKey(passThroughParam);
+
+              if(autoReply){
+                return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply });
+              }
               this.render('/message', { recipient: messagingEvent.sender, text: passThroughParam })
             }else{
               this.render('/authsuccess', { recipient: messagingEvent.sender })
@@ -150,7 +155,7 @@ class UIBOT {
     this.navigate(event.postback.payload, event.sender);
   }
 
-  messageHandler(event){
+  async messageHandler(event){
     this.logMessage(event);
     const message = event.message;
 
@@ -164,6 +169,12 @@ class UIBOT {
     }
 
     if (message.text) {
+      let autoReply = getRepliesByKey(message.text);
+
+      if(autoReply){
+        return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply });
+      }
+
       return this.render('/message', { recipient: event.sender, text: message.text });
     } else if (message.attachments) {
       return this.render('/attachment', { recipient: event.sender, text: message.text });

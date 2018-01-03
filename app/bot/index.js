@@ -11,6 +11,7 @@ import BotMenu from './BotMenu';
 import AuthSuccessful from './AuthSuccessful';
 import NewuserView from './NewuserView';
 import Typing from './Typing';
+import EditorReply from './EditorReply';
 
 export default (path, props) => {
 
@@ -29,6 +30,7 @@ export default (path, props) => {
         <PropRoute path="/authsuccess" component={AuthSuccessful} />
         <PropRoute path="/newuser" component={NewuserView} />
         <PropRoute path="/typing" component={Typing} />
+        <PropRoute path="/editorreply" component={EditorReply} />
         <PropRoute component={NotFoundView} />
       </Switch>
     </StaticRouter>

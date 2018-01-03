@@ -26,11 +26,10 @@ export const getReplies = async () => {
 };
 
 export const getRepliesById = async (id) => {
-  return await Reply.findAll({ where: { id } });
+  return await Reply.findOne({ where: { id } });
 };
 
 export const getRepliesByKey = async (key, cb) => {
-  const result =  await Reply.findAll({ where: { key } });
-  console.log('dbop', result);
+  const result =  await Reply.findOne({ where: { key } });
   return result;
 };
