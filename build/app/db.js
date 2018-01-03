@@ -67,7 +67,7 @@ var getRepliesById = exports.getRepliesById = function () {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return Reply.findAll({ where: { id: id } });
+            return Reply.findOne({ where: { id: id } });
 
           case 2:
             return _context2.abrupt('return', _context2.sent);
@@ -93,15 +93,13 @@ var getRepliesByKey = exports.getRepliesByKey = function () {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return Reply.findAll({ where: { key: key } });
+            return Reply.findOne({ where: { key: key } });
 
           case 2:
             result = _context3.sent;
-
-            console.log('dbop', result);
             return _context3.abrupt('return', result);
 
-          case 5:
+          case 4:
           case 'end':
             return _context3.stop();
         }

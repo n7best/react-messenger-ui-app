@@ -81,43 +81,20 @@ var UIBOT = function () {
     }
   }, {
     key: 'render',
-    value: function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(path, props) {
-        var res;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                this.log('Render:', path, props);
-                // typing on
-                this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: true }));
-                _context.next = 4;
-                return (0, _bot2.default)(path, props);
+    value: function render(path, props) {
+      var direct = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-              case 4:
-                res = _context.sent;
+      this.log('Render:', path, props);
+      // typing on
+      this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: true }));
+      var res = (0, _bot2.default)(path, props);
+      (0, _bot2.default)(path, props);
+      this.log('||| render:', res);
+      this.send(res);
 
-                (0, _bot2.default)(path, props);
-                this.log('||| render:', res);
-                this.send(res);
-
-                // typing off
-                this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: false }));
-
-              case 9:
-              case 'end':
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function render(_x, _x2) {
-        return _ref.apply(this, arguments);
-      }
-
-      return render;
-    }()
+      // typing off
+      this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: false }));
+    }
   }, {
     key: 'webhookGetController',
     value: function webhookGetController(req, res) {
@@ -152,6 +129,11 @@ var UIBOT = function () {
 
               _this2.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
               if (passThroughParam) {
+                var autoReply = (0, _db.getRepliesByKey)(passThroughParam);
+
+                if (autoReply) {
+                  return _this2.render('/editorreply', { recipient: event.sender, srcCode: autoReply });
+                }
                 _this2.render('/message', { recipient: messagingEvent.sender, text: passThroughParam });
               } else {
                 _this2.render('/authsuccess', { recipient: messagingEvent.sender });
@@ -216,25 +198,75 @@ var UIBOT = function () {
     }
   }, {
     key: 'messageHandler',
-    value: function messageHandler(event) {
-      this.logMessage(event);
-      var message = event.message;
+    value: function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(event) {
+        var message, autoReply;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                this.logMessage(event);
+                message = event.message;
 
-      // special cases
-      if (message.is_echo) {
-        this.log("Received echo for message", message);
-        return this.render('/echo', _extends({ recipient: event.sender }, message));
-      } else if (message.quick_reply) {
-        this.log("Quick reply for message %s with payload %s", message.mid, message.quick_reply);
-        return this.navigate(message.quick_reply.payload, event.sender);
+                // special cases
+
+                if (!message.is_echo) {
+                  _context.next = 7;
+                  break;
+                }
+
+                this.log("Received echo for message", message);
+                return _context.abrupt('return', this.render('/echo', _extends({ recipient: event.sender }, message)));
+
+              case 7:
+                if (!message.quick_reply) {
+                  _context.next = 10;
+                  break;
+                }
+
+                this.log("Quick reply for message %s with payload %s", message.mid, message.quick_reply);
+                return _context.abrupt('return', this.navigate(message.quick_reply.payload, event.sender));
+
+              case 10:
+                if (!message.text) {
+                  _context.next = 17;
+                  break;
+                }
+
+                autoReply = (0, _db.getRepliesByKey)(message.text);
+
+                if (!autoReply) {
+                  _context.next = 14;
+                  break;
+                }
+
+                return _context.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply }));
+
+              case 14:
+                return _context.abrupt('return', this.render('/message', { recipient: event.sender, text: message.text }));
+
+              case 17:
+                if (!message.attachments) {
+                  _context.next = 19;
+                  break;
+                }
+
+                return _context.abrupt('return', this.render('/attachment', { recipient: event.sender, text: message.text }));
+
+              case 19:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function messageHandler(_x2) {
+        return _ref.apply(this, arguments);
       }
 
-      if (message.text) {
-        return this.render('/message', { recipient: event.sender, text: message.text });
-      } else if (message.attachments) {
-        return this.render('/attachment', { recipient: event.sender, text: message.text });
-      }
-    }
+      return messageHandler;
+    }()
   }, {
     key: 'logMessage',
     value: function logMessage(event) {
