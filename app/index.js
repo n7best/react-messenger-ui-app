@@ -80,7 +80,7 @@ class UIBOT {
       // There may be multiple if batched
       data.entry.forEach((pageEntry) => {
         // Iterate over each messaging event
-        pageEntry.messaging.forEach((messagingEvent) => {
+        pageEntry.messaging.forEach(async (messagingEvent) => {
           if (messagingEvent.optin) {
             // receivedAuthentication(messagingEvent);
             const senderID = messagingEvent.sender.id;
@@ -90,7 +90,7 @@ class UIBOT {
 
             this.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
             if(passThroughParam){
-              let autoReply = getRepliesByKey(passThroughParam);
+              let autoReply = await getRepliesByKey(passThroughParam);
 
               if(autoReply){
                 return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply });
@@ -169,7 +169,7 @@ class UIBOT {
     }
 
     if (message.text) {
-      let autoReply = getRepliesByKey(message.text);
+      let autoReply = await getRepliesByKey(message.text);
 
       if(autoReply){
         return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply });

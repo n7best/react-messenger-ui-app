@@ -119,60 +119,110 @@ var UIBOT = function () {
         // There may be multiple if batched
         data.entry.forEach(function (pageEntry) {
           // Iterate over each messaging event
-          pageEntry.messaging.forEach(function (messagingEvent) {
-            if (messagingEvent.optin) {
-              // receivedAuthentication(messagingEvent);
-              var senderID = messagingEvent.sender.id;
-              var recipientID = messagingEvent.recipient.id;
-              var timeOfAuth = messagingEvent.timestamp;
-              var passThroughParam = messagingEvent.optin.ref;
+          pageEntry.messaging.forEach(function () {
+            var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(messagingEvent) {
+              var senderID, recipientID, timeOfAuth, passThroughParam, autoReply, delivery, messageIDs, watermark, _watermark, sequenceNumber, _senderID, status, authCode, policy;
 
-              _this2.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
-              if (passThroughParam) {
-                var autoReply = (0, _db.getRepliesByKey)(passThroughParam);
+              return regeneratorRuntime.wrap(function _callee$(_context) {
+                while (1) {
+                  switch (_context.prev = _context.next) {
+                    case 0:
+                      if (!messagingEvent.optin) {
+                        _context.next = 18;
+                        break;
+                      }
 
-                if (autoReply) {
-                  return _this2.render('/editorreply', { recipient: event.sender, srcCode: autoReply });
+                      // receivedAuthentication(messagingEvent);
+                      senderID = messagingEvent.sender.id;
+                      recipientID = messagingEvent.recipient.id;
+                      timeOfAuth = messagingEvent.timestamp;
+                      passThroughParam = messagingEvent.optin.ref;
+
+
+                      _this2.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
+
+                      if (!passThroughParam) {
+                        _context.next = 15;
+                        break;
+                      }
+
+                      _context.next = 9;
+                      return (0, _db.getRepliesByKey)(passThroughParam);
+
+                    case 9:
+                      autoReply = _context.sent;
+
+                      if (!autoReply) {
+                        _context.next = 12;
+                        break;
+                      }
+
+                      return _context.abrupt('return', _this2.render('/editorreply', { recipient: event.sender, srcCode: autoReply }));
+
+                    case 12:
+                      _this2.render('/message', { recipient: messagingEvent.sender, text: passThroughParam });
+                      _context.next = 16;
+                      break;
+
+                    case 15:
+                      _this2.render('/authsuccess', { recipient: messagingEvent.sender });
+
+                    case 16:
+                      _context.next = 19;
+                      break;
+
+                    case 18:
+                      if (messagingEvent.message) {
+                        _this2.messageHandler(messagingEvent);
+                      } else if (messagingEvent.delivery) {
+                        delivery = messagingEvent.delivery;
+                        messageIDs = delivery.mids;
+                        watermark = delivery.watermark;
+
+
+                        if (messageIDs) {
+                          messageIDs.forEach(function (messageID) {
+                            return _this2.log("Received delivery confirmation for message ID: %s", messageID);
+                          });
+                        }
+
+                        _this2.log("All message before %d were delivered.", watermark);
+                      } else if (messagingEvent.postback) {
+                        _this2.postbackHandler(messagingEvent);
+                      } else if (messagingEvent.read) {
+                        // All messages before watermark (a timestamp) or sequence have been seen.
+                        _watermark = messagingEvent.read.watermark;
+                        sequenceNumber = messagingEvent.read.seq;
+
+
+                        _this2.log("Received message read event for watermark %d and sequence number %d", _watermark, sequenceNumber);
+                      } else if (messagingEvent.account_linking) {
+                        _senderID = messagingEvent.sender.id;
+                        status = messagingEvent.account_linking.status;
+                        authCode = messagingEvent.account_linking.authorization_code;
+
+
+                        _this2.log("Received account link event with for user %d with status %s and auth code %s ", _senderID, status, authCode);
+                      } else if (typeof messagingEvent['policy-enforcement'] !== 'undefined') {
+                        policy = messagingEvent['policy-enforcement'];
+
+                        _this2.log("Policy-Enforcement: ", policy.action, policy.reason);
+                      } else {
+                        _this2.log("Webhook received unknown messagingEvent: ", messagingEvent);
+                      }
+
+                    case 19:
+                    case 'end':
+                      return _context.stop();
+                  }
                 }
-                _this2.render('/message', { recipient: messagingEvent.sender, text: passThroughParam });
-              } else {
-                _this2.render('/authsuccess', { recipient: messagingEvent.sender });
-              }
-            } else if (messagingEvent.message) {
-              _this2.messageHandler(messagingEvent);
-            } else if (messagingEvent.delivery) {
-              var delivery = messagingEvent.delivery;
-              var messageIDs = delivery.mids;
-              var watermark = delivery.watermark;
+              }, _callee, _this2);
+            }));
 
-              if (messageIDs) {
-                messageIDs.forEach(function (messageID) {
-                  return _this2.log("Received delivery confirmation for message ID: %s", messageID);
-                });
-              }
-
-              _this2.log("All message before %d were delivered.", watermark);
-            } else if (messagingEvent.postback) {
-              _this2.postbackHandler(messagingEvent);
-            } else if (messagingEvent.read) {
-              // All messages before watermark (a timestamp) or sequence have been seen.
-              var _watermark = messagingEvent.read.watermark;
-              var sequenceNumber = messagingEvent.read.seq;
-
-              _this2.log("Received message read event for watermark %d and sequence number %d", _watermark, sequenceNumber);
-            } else if (messagingEvent.account_linking) {
-              var _senderID = messagingEvent.sender.id;
-              var status = messagingEvent.account_linking.status;
-              var authCode = messagingEvent.account_linking.authorization_code;
-
-              _this2.log("Received account link event with for user %d with status %s and auth code %s ", _senderID, status, authCode);
-            } else if (typeof messagingEvent['policy-enforcement'] !== 'undefined') {
-              var policy = messagingEvent['policy-enforcement'];
-              _this2.log("Policy-Enforcement: ", policy.action, policy.reason);
-            } else {
-              _this2.log("Webhook received unknown messagingEvent: ", messagingEvent);
-            }
-          });
+            return function (_x2) {
+              return _ref.apply(this, arguments);
+            };
+          }());
         });
 
         // must sent 200 to recongnize received
@@ -199,11 +249,11 @@ var UIBOT = function () {
   }, {
     key: 'messageHandler',
     value: function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(event) {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(event) {
         var message, autoReply;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 this.logMessage(event);
                 message = event.message;
@@ -211,58 +261,62 @@ var UIBOT = function () {
                 // special cases
 
                 if (!message.is_echo) {
-                  _context.next = 7;
+                  _context2.next = 7;
                   break;
                 }
 
                 this.log("Received echo for message", message);
-                return _context.abrupt('return', this.render('/echo', _extends({ recipient: event.sender }, message)));
+                return _context2.abrupt('return', this.render('/echo', _extends({ recipient: event.sender }, message)));
 
               case 7:
                 if (!message.quick_reply) {
-                  _context.next = 10;
+                  _context2.next = 10;
                   break;
                 }
 
                 this.log("Quick reply for message %s with payload %s", message.mid, message.quick_reply);
-                return _context.abrupt('return', this.navigate(message.quick_reply.payload, event.sender));
+                return _context2.abrupt('return', this.navigate(message.quick_reply.payload, event.sender));
 
               case 10:
                 if (!message.text) {
-                  _context.next = 17;
+                  _context2.next = 19;
                   break;
                 }
 
-                autoReply = (0, _db.getRepliesByKey)(message.text);
+                _context2.next = 13;
+                return (0, _db.getRepliesByKey)(message.text);
+
+              case 13:
+                autoReply = _context2.sent;
 
                 if (!autoReply) {
-                  _context.next = 14;
+                  _context2.next = 16;
                   break;
                 }
 
-                return _context.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply }));
+                return _context2.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply }));
 
-              case 14:
-                return _context.abrupt('return', this.render('/message', { recipient: event.sender, text: message.text }));
-
-              case 17:
-                if (!message.attachments) {
-                  _context.next = 19;
-                  break;
-                }
-
-                return _context.abrupt('return', this.render('/attachment', { recipient: event.sender, text: message.text }));
+              case 16:
+                return _context2.abrupt('return', this.render('/message', { recipient: event.sender, text: message.text }));
 
               case 19:
+                if (!message.attachments) {
+                  _context2.next = 21;
+                  break;
+                }
+
+                return _context2.abrupt('return', this.render('/attachment', { recipient: event.sender, text: message.text }));
+
+              case 21:
               case 'end':
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, this);
+        }, _callee2, this);
       }));
 
-      function messageHandler(_x2) {
-        return _ref.apply(this, arguments);
+      function messageHandler(_x3) {
+        return _ref2.apply(this, arguments);
       }
 
       return messageHandler;
