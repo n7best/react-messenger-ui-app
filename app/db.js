@@ -17,7 +17,7 @@ export const Reply = sequelize.define('reply', {
     unique: true
   },
   response: {
-    type: Sequelize.STRING
+    type: Sequelize.TEXT
   }
 });
 
