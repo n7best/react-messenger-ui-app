@@ -52,7 +52,8 @@ var EditorReply = function (_Component) {
         var opts = {
           transforms: {
             dangerousForOf: true,
-            dangerousTaggedTemplateString: true
+            dangerousTaggedTemplateString: true,
+            modules: false
           }
         };
 
@@ -74,7 +75,7 @@ var EditorReply = function (_Component) {
 
         return _react2.default.createElement(ReplyComponent, { recipient: recipient });
       } catch (e) {
-        console.log('err', e);
+        console.log('err', e.message);
         var _recipient = this.props.recipient;
         var Message = ReactMessengerUI.Message,
             Text = ReactMessengerUI.Text;
@@ -86,7 +87,7 @@ var EditorReply = function (_Component) {
           _react2.default.createElement(
             Text,
             null,
-            'Error Occured while compling your code!'
+            'Error! ' + e.message
           )
         );
       }

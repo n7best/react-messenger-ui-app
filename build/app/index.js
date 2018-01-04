@@ -30,6 +30,10 @@ var _bot = require('./bot');
 
 var _bot2 = _interopRequireDefault(_bot);
 
+var _codeReplies = require('./codeReplies');
+
+var _codeReplies2 = _interopRequireDefault(_codeReplies);
+
 var _db = require('./db');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -68,9 +72,15 @@ var UIBOT = function () {
       });
 
       // Create REST resource
-      _epilogue2.default.resource({
+      var replyResource = _epilogue2.default.resource({
         model: _db.Reply,
-        endpoints: ['/reply', '/reply/:id']
+        endpoints: ['/reply', '/reply/:id'],
+        actions: ['create', 'update']
+      });
+
+      replyResource.create.write.before(function (req, res, context) {
+        console.log('before', req.body, res, context);
+        return context.continue;
       });
     }
   }, {
@@ -92,6 +102,12 @@ var UIBOT = function () {
       this.server.set('port', process.env.PORT || 5000);
 
       _db.sequelize.sync({ force: true }).then(function () {
+        //default data
+        _codeReplies2.default.forEach(function (reply) {
+          return _db.Reply.create(reply);
+        });
+
+        // start server
         _this.server.listen(_this.server.get('port'), function () {
           _this.log('Node server is running on port', _this.server.get('port'));
           _this.initMessenger();
@@ -313,7 +329,7 @@ var UIBOT = function () {
                   break;
                 }
 
-                return _context2.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply }));
+                return _context2.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response }));
 
               case 16:
                 return _context2.abrupt('return', this.render('/message', { recipient: event.sender, text: message.text }));

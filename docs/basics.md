@@ -14,8 +14,11 @@ React Messenger UI is like React, but it uses bot components instead of web comp
 ```BotWebPlayer path=helloworld
 import React, { Component } from 'react';
 import { Message, Text } from 'react-messenger-ui';
+
 class AwesomeChatBot extends Component {
   render() {
+    const { recipient } = this.props;
+
     return (
       <Message recipient={recipient}>
         <Text>Hello World!</Text>

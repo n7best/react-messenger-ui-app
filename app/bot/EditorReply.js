@@ -12,7 +12,8 @@ class EditorReply extends Component {
       const opts = {
         transforms: {
           dangerousForOf: true,
-          dangerousTaggedTemplateString: true
+          dangerousTaggedTemplateString: true,
+          modules: false
         }
       }
 
@@ -33,14 +34,14 @@ class EditorReply extends Component {
       return <ReplyComponent recipient={recipient} />
 
     }catch(e){
-      console.log('err', e)
+      console.log('err', e.message)
       const { recipient } = this.props
       const { Message, Text } = ReactMessengerUI;
 
       return (
         <Message recipient={recipient}>
           <Text>
-            Error Occured while compling your code!
+            { `Error! ${e.message}`}
           </Text>
         </Message>
       );

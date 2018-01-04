@@ -130,7 +130,15 @@
       editor.setValue(code, 1);
 
       editor.on("change", function(e){
-          console.log(editor.getValue().replace(/(\r\n|\n|\r)/gm,""))
+          // remove import lines
+          var code = editor.getValue();
+          var lines = code.split('\n');
+          var filterred = lines.filter(function (line) {
+              return line.indexOf('import') != 0;
+          });
+
+          code = filterred.join('\n').replace(/(\r\n|\n|\r)/gm,"")
+
           btnSendToMessenger= createSendToMessenger('test', document.getElementById('actionbar'));
           FB.XFBML.parse()
       })

@@ -4,6 +4,7 @@ import request from 'request';
 import epilogue from 'epilogue';
 import verifyRequestSignature from './utils/verifyRequestSignature';
 import render from './bot';
+import codeReplies from './codeReplies';
 import {getRepliesByKey, sequelize, Reply } from './db';
 
 class UIBOT {
@@ -32,10 +33,16 @@ class UIBOT {
     })
 
     // Create REST resource
-    epilogue.resource({
+    const replyResource = epilogue.resource({
       model: Reply,
-      endpoints: ['/reply', '/reply/:id']
+      endpoints: ['/reply', '/reply/:id'],
+      actions: ['create', 'update']
     });
+
+    replyResource.create.write.before((req,res, context)=> {
+      console.log('before', req.body, res, context);
+      return context.continue;
+    })
   }
 
   initMessenger(){
@@ -53,6 +60,10 @@ class UIBOT {
 
     sequelize.sync({ force: true })
     .then(()=>{
+        //default data
+        codeReplies.forEach(reply=>Reply.create(reply));
+
+        // start server
         this.server.listen(this.server.get('port'), () => {
           this.log('Node server is running on port', this.server.get('port'));
           this.initMessenger();
@@ -190,7 +201,7 @@ class UIBOT {
       let autoReply = await getRepliesByKey(message.text);
 
       if(autoReply){
-        return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply });
+        return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response });
       }
 
       return this.render('/message', { recipient: event.sender, text: message.text });
