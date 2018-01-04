@@ -111,7 +111,7 @@ class UIBOT {
               let autoReply = await getRepliesByKey(passThroughParam);
 
               if(autoReply){
-                return this.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply });
+                return this.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply.response });
               }
               this.render('/message', { recipient: messagingEvent.sender, text: passThroughParam })
             }else{

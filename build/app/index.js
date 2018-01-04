@@ -176,7 +176,7 @@ var UIBOT = function () {
                         break;
                       }
 
-                      return _context.abrupt('return', _this2.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply }));
+                      return _context.abrupt('return', _this2.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply.response }));
 
                     case 12:
                       _this2.render('/message', { recipient: messagingEvent.sender, text: passThroughParam });
