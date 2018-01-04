@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import bodyParser from 'body-parser';
 import request from 'request';
 import epilogue from 'epilogue';
+import { hri } from 'human-readable-ids';
 import verifyRequestSignature from './utils/verifyRequestSignature';
 import render from './bot';
 import codeReplies from './codeReplies';
@@ -40,7 +41,7 @@ class UIBOT {
     });
 
     replyResource.create.write.before((req,res, context)=> {
-      console.log('before', req.body, res, context);
+      req.body.key = hri.random().replace(/-/g, ' ');
       return context.continue;
     })
   }
@@ -119,7 +120,7 @@ class UIBOT {
 
             this.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
             if(passThroughParam){
-              let autoReply = await getRepliesByKey(passThroughParam);
+              let autoReply = await getRepliesByKey(passThroughParam.replace(/[^\w\s]/gi, '').trim().toLowerCase());
 
               if(autoReply){
                 return this.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply.response });
@@ -198,7 +199,7 @@ class UIBOT {
     }
 
     if (message.text) {
-      let autoReply = await getRepliesByKey(message.text);
+      let autoReply = await getRepliesByKey(message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase());
 
       if(autoReply){
         return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response });

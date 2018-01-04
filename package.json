@@ -25,6 +25,7 @@
     "config": "^1.28.1",
     "epilogue": "^0.7.1",
     "express": "^4.16.2",
+    "human-readable-ids": "^1.0.3",
     "pg": "^6.4.2",
     "pg-hstore": "^2.3.2",
     "react-messenger-ui": "0.0.14",
