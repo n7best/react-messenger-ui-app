@@ -12,9 +12,17 @@
   },
   "dependencies": {
     "async": "~0.2.8",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-remove-strict-mode": "0.0.2",
     "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "body-parser": "^1.18.2",
     "config": "^1.28.1",
+    "epilogue": "^0.7.1",
     "express": "^4.16.2",
     "pg": "^6.4.2",
     "pg-hstore": "^2.3.2",
@@ -22,13 +30,6 @@
     "react-router": "^4.2.0",
     "request": "^2.83.0",
     "sequelize": "^4.28.6",
-    "socket.io": "~0.9.14",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-remove-strict-mode": "0.0.2",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1"
+    "socket.io": "~0.9.14"
   }
 }

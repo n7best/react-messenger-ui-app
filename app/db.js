@@ -1,12 +1,12 @@
 import Sequelize from 'sequelize';
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+export const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   dialectOptions: {
     ssl: true
   }
 });
 
-const Reply = sequelize.define('reply', {
+export const Reply = sequelize.define('reply', {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,

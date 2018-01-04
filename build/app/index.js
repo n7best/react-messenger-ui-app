@@ -18,6 +18,10 @@ var _request = require('request');
 
 var _request2 = _interopRequireDefault(_request);
 
+var _epilogue = require('epilogue');
+
+var _epilogue2 = _interopRequireDefault(_epilogue);
+
 var _verifyRequestSignature = require('./utils/verifyRequestSignature');
 
 var _verifyRequestSignature2 = _interopRequireDefault(_verifyRequestSignature);
@@ -56,6 +60,18 @@ var UIBOT = function () {
       this.server.get('/webhook', this.webhookGetController.bind(this));
       // all message routes
       this.server.post('/webhook', this.webhookPostController.bind(this));
+
+      // resful routes
+      _epilogue2.default.initialize({
+        app: this.server,
+        sequelize: _db.sequelize
+      });
+
+      // Create REST resource
+      _epilogue2.default.resource({
+        model: _db.Reply,
+        endpoints: ['/reply', '/reply/:id']
+      });
     }
   }, {
     key: 'initMessenger',
@@ -74,9 +90,12 @@ var UIBOT = function () {
       var _this = this;
 
       this.server.set('port', process.env.PORT || 5000);
-      this.server.listen(this.server.get('port'), function () {
-        _this.log('Node server is running on port', _this.server.get('port'));
-        _this.initMessenger();
+
+      _db.sequelize.sync({ force: true }).then(function () {
+        _this.server.listen(_this.server.get('port'), function () {
+          _this.log('Node server is running on port', _this.server.get('port'));
+          _this.initMessenger();
+        });
       });
     }
   }, {
@@ -157,7 +176,7 @@ var UIBOT = function () {
                         break;
                       }
 
-                      return _context.abrupt('return', _this2.render('/editorreply', { recipient: event.sender, srcCode: autoReply }));
+                      return _context.abrupt('return', _this2.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply }));
 
                     case 12:
                       _this2.render('/message', { recipient: messagingEvent.sender, text: passThroughParam });

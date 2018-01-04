@@ -26,6 +26,7 @@
         background: #f5f5f5;
         box-sizing:border-box;
         font-family: 'Roboto', sans-serif;
+        border-top: 1px solid #ccc;
     }
 
     .container .toolbar input {
@@ -42,6 +43,27 @@
         height: calc(100% - 110px);
     }
 
+    .ace-xcode .ace_entity.ace_name.ace_tag, .ace-xcode .ace_support.ace_class, .ace-xcode .ace_support.ace_type {
+        color: #0084ff !important;
+    }
+
+    .ace-xcode .ace_constant.ace_language, .ace-xcode .ace_keyword, .ace-xcode .ace_meta, .ace-xcode .ace_variable.ace_language {
+        color: hsl(286, 60%, 67%) !important;
+    }
+
+    .ace-xcode .ace_string {
+        color: hsl( 95, 38%, 62%) !important;
+    }
+
+    .ace-xcode {
+        color: hsl(0, 0%, 44%) !important;
+    }
+
+    #fbLoader img {
+        height: 50px;
+        width: auto;
+    }
+
 </style>
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
@@ -52,23 +74,22 @@
         Reply To: <input type="text" id="replyText" disabled/>
     </div>
     <div id="editor"></div>
-    <div class="actionbar">
-        <div id="fbLoader">Loading Facebook SDK...</div>
-        <div
-          id="sendToMessenger"
-          class="fb-send-to-messenger"
-          messenger_app_id="1887139748264265"
-          page_id="552483055096851"
-          color="white"
-          size="large">
-        </div>
+    <div class="actionbar" id="actionbar">
+        <div id="fbLoader"><img src="/img/loader.gif" /></div>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
+    // state
     var code = '';
+    var btnSendToMessenger, path;
+    var customPath = false;
+    var loader = document.getElementById('fbLoader')
+
+    // start
     if(window.location.hash) {
+        // get all the hash parameters
         var hash = window.location.hash.substring(1);
         var params = {}
         hash.split('&').map(hk => {
@@ -78,54 +99,92 @@
 
         if(params.code){
             code = decodeURIComponent(params.code)
+            loadEditor(code)
         }
 
         if(params.path) {
-            var el = document.getElementById('replyText')
-            el.value = params.path
-
-            var btn = document.getElementById('sendToMessenger')
-            btn.setAttribute('ref', params.path)
+            path = params.path;
+            updatePath();
         }
     }
-    var editor = ace.edit("editor");
-    editor.setOptions({
-      fontSize: "14px"
-    });
-    editor.container.style.lineHeight = 2
-    editor.renderer.updateFontSize()
-    editor.setTheme("ace/theme/xcode");
-    editor.getSession().setMode("ace/mode/jsx");
-    editor.setValue(code, 1);
-</script>
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId            : '1887139748264265',
-      autoLogAppEvents : true,
-      xfbml            : true,
-      version          : 'v2.11'
-    });
 
-    FB.Event.subscribe('send_to_messenger', function(e, ref, is_after_optin) {
-      // callback for events triggered by the plugin
-      console.log(e, ref, is_after_optin);
-      var el = document.getElementById('fbLoader')
-      el.style.display = 'none';
-    });
+    LoadFB();
+
+    function updatePath(){
+      var el = document.getElementById('replyText')
+      el.value = path
+
+      btnSendToMessenger = createSendToMessenger(params.path, document.getElementById('actionbar'));
+    }
+
+    // fuctions
+    function loadEditor(code){
+      var editor = ace.edit("editor");
+      editor.setOptions({
+        fontSize: "14px"
+      });
+      editor.container.style.lineHeight = 2
+      editor.renderer.updateFontSize()
+      editor.setTheme("ace/theme/xcode");
+      editor.getSession().setMode("ace/mode/jsx");
+      editor.setValue(code, 1);
+
+      editor.on("change", function(e){
+          console.log(editor.getValue().replace(/(\r\n|\n|\r)/gm,"");)
+          btnSendToMessenger= createSendToMessenger('test', document.getElementById('actionbar'));
+          FB.XFBML.parse()
+      })
+
+      //editor.setReadOnly(true)
+    }
+
+    function createSendToMessenger(ref, parent){
+      if(btnSendToMessenger){
+        btnSendToMessenger.parentNode.removeChild(btnSendToMessenger);
+      }
+
+      loader.style.display = 'block';
+
+      let el = document.createElement('div');
+
+      el.setAttribute('ref', ref)
+      el.setAttribute('messenger_app_id', '1887139748264265');
+      el.setAttribute('page_id', "552483055096851");
+      el.setAttribute('color', 'white');
+      el.setAttribute('size', 'large');
+      el.className="fb-send-to-messenger"
+
+      parent.appendChild(el);
+
+      return el;
+    }
+
+    function LoadFB(){
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId            : '1887139748264265',
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v2.11'
+        });
+
+        FB.Event.subscribe('send_to_messenger', function(e, ref, is_after_optin) {
+          // callback for events triggered by the plugin
+          console.log(e, ref, is_after_optin);
+          loader.style.display = 'none';
+        });
 
 
-  };
+      };
 
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-
-
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "https://connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    }
 </script>
 </body>
 </html>

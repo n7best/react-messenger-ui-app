@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getRepliesByKey = exports.getRepliesById = exports.getReplies = undefined;
+exports.getRepliesByKey = exports.getRepliesById = exports.getReplies = exports.Reply = exports.sequelize = undefined;
 
 var _sequelize = require('sequelize');
 
@@ -13,14 +13,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-var sequelize = new _sequelize2.default(process.env.DATABASE_URL, {
+var sequelize = exports.sequelize = new _sequelize2.default(process.env.DATABASE_URL, {
   dialect: 'postgres',
   dialectOptions: {
     ssl: true
   }
 });
 
-var Reply = sequelize.define('reply', {
+var Reply = exports.Reply = sequelize.define('reply', {
   id: {
     type: _sequelize2.default.INTEGER,
     primaryKey: true,
