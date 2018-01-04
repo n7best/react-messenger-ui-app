@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import * as ReactMessengerUI from 'react-messenger-ui';
 import { transform } from 'buble';
+const vm = require('vm');
 
 class EditorReply extends Component {
 
   render() {
-
     try{
+      const sandbox = { result: null, React, Component, ...ReactMessengerUI };
       const { recipient, srcCode } = this.props
-
       const opts = {
         transforms: {
           dangerousForOf: true,
@@ -17,20 +17,19 @@ class EditorReply extends Component {
         }
       }
 
+      // create vm to isolate code excution
+      vm.createContext(sandbox);
+
       let transCode = transform(srcCode, opts).code;
       let finalCode = transCode.trim().replace(/^var \w+ =/, '').replace(/;$/, '');
-      finalCode = `return (${finalCode})`;
-      //console.log('final code', finalCode)
+      finalCode = `result = (${finalCode})`;
+      // console.log('final code', finalCode)
 
-      const scope = { React, Component, ...ReactMessengerUI }
+      vm.runInContext(finalCode, sandbox);
 
-      const scopeKeys = Object.keys(scope)
-      const scopeValues = scopeKeys.map(key => scope[key])
-
-      const evalFn = new Function('React', ...scopeKeys, finalCode);
-
-      const ReplyComponent = evalFn(React, ...scopeValues)
-
+      // console.log('final result: ',sandbox.result);
+      // const ReplyComponent = evalFn(React, ...scopeValues)
+      const ReplyComponent = sandbox.result;
       return <ReplyComponent recipient={recipient} />
 
     }catch(e){

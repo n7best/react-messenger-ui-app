@@ -22,13 +22,13 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var vm = require('vm');
 
 var EditorReply = function (_Component) {
   _inherits(EditorReply, _Component);
@@ -42,12 +42,11 @@ var EditorReply = function (_Component) {
   _createClass(EditorReply, [{
     key: 'render',
     value: function render() {
-
       try {
+        var sandbox = _extends({ result: null, React: _react2.default, Component: _react.Component }, ReactMessengerUI);
         var _props = this.props,
             recipient = _props.recipient,
             srcCode = _props.srcCode;
-
 
         var opts = {
           transforms: {
@@ -55,24 +54,20 @@ var EditorReply = function (_Component) {
             dangerousTaggedTemplateString: true,
             modules: false
           }
-        };
+
+          // create vm to isolate code excution
+        };vm.createContext(sandbox);
 
         var transCode = (0, _buble.transform)(srcCode, opts).code;
         var finalCode = transCode.trim().replace(/^var \w+ =/, '').replace(/;$/, '');
-        finalCode = 'return (' + finalCode + ')';
-        //console.log('final code', finalCode)
+        finalCode = 'result = (' + finalCode + ')';
+        // console.log('final code', finalCode)
 
-        var scope = _extends({ React: _react2.default, Component: _react.Component }, ReactMessengerUI);
+        vm.runInContext(finalCode, sandbox);
 
-        var scopeKeys = Object.keys(scope);
-        var scopeValues = scopeKeys.map(function (key) {
-          return scope[key];
-        });
-
-        var evalFn = new (Function.prototype.bind.apply(Function, [null].concat(['React'], _toConsumableArray(scopeKeys), [finalCode])))();
-
-        var ReplyComponent = evalFn.apply(undefined, [_react2.default].concat(_toConsumableArray(scopeValues)));
-
+        // console.log('final result: ',sandbox.result);
+        // const ReplyComponent = evalFn(React, ...scopeValues)
+        var ReplyComponent = sandbox.result;
         return _react2.default.createElement(ReplyComponent, { recipient: recipient });
       } catch (e) {
         console.log('err', e.message);
