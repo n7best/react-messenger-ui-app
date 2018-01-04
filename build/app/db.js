@@ -31,7 +31,7 @@ var Reply = exports.Reply = sequelize.define('reply', {
     unique: true
   },
   response: {
-    type: _sequelize2.default.STRING
+    type: _sequelize2.default.TEXT
   }
 });
 
