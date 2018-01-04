@@ -69,6 +69,17 @@
         width: auto;
     }
 
+    #pathLoader {
+      display: inline-block;
+    }
+
+    #pathLoader img {
+       height: 15px;
+      width: 30px;
+    }
+
+
+
 </style>
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
@@ -76,21 +87,22 @@
 
 <div class="container">
     <div class="toolbar">
-        Reply To: <input type="text" id="replyText" disabled/>
+        Reply To: <div id="pathLoader"><img src="/img/loader.gif" /></div><input type="text" id="replyText" disabled/>
     </div>
     <div id="editor"></div>
     <div class="actionbar" id="actionbar">
         <div id="fbLoader"><img src="/img/loader.gif" /></div>
     </div>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
     // state
     var code = '';
-    var btnSendToMessenger, path;
+    var btnSendToMessenger, path, editor;
     var customPath = false;
     var loader = document.getElementById('fbLoader')
+    var pathLoader = document.getElementById('pathLoader')
 
     // start
     if(window.location.hash) {
@@ -115,16 +127,72 @@
 
     LoadFB();
 
+    // fuctions
+
+    function checkStatus(response) {
+      if (response.status >= 200 && response.status < 300) {
+        return response
+      } else {
+        var error = new Error(response.statusText)
+        error.response = response
+        throw error
+      }
+    }
+
+    function parseJSON(response) {
+      return response.json()
+    }
+
+    function createReply(code){
+      return fetch('/reply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          response: code
+        })
+      })
+    }
+
     function updatePath(){
       var el = document.getElementById('replyText')
       el.value = path
-
+      pathLoader.style.display = 'none';
       btnSendToMessenger = createSendToMessenger(params.path, document.getElementById('actionbar'));
     }
 
-    // fuctions
+    function codeChange(e){
+      // remove import lines
+      var code = editor.getValue();
+      var lines = code.split('\n');
+      var filterred = lines.filter(function (line) {
+          return line.indexOf('import') != 0;
+      });
+
+      code = filterred.join('\n').replace(/(\r\n|\n|\r)/gm,"")
+
+      if(customPath){
+
+      }else{
+        createReply(code)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(function(data) {
+          customPath = true;
+          console.log('request succeeded with JSON response', data)
+          // request new path
+          btnSendToMessenger= createSendToMessenger('test', document.getElementById('actionbar'));
+          FB.XFBML.parse()
+        }).catch(function(error) {
+          console.log('request failed', error)
+        })
+
+      }
+    }
+
     function loadEditor(code){
-      var editor = ace.edit("editor");
+      editor = ace.edit("editor");
       editor.setOptions({
         fontSize: "14px"
       });
@@ -134,19 +202,7 @@
       editor.getSession().setMode("ace/mode/jsx");
       editor.setValue(code, 1);
 
-      editor.on("change", function(e){
-          // remove import lines
-          var code = editor.getValue();
-          var lines = code.split('\n');
-          var filterred = lines.filter(function (line) {
-              return line.indexOf('import') != 0;
-          });
-
-          code = filterred.join('\n').replace(/(\r\n|\n|\r)/gm,"")
-
-          btnSendToMessenger= createSendToMessenger('test', document.getElementById('actionbar'));
-          FB.XFBML.parse()
-      })
+      editor.on("change", codeChange)
 
       //editor.setReadOnly(true)
     }
