@@ -22,6 +22,8 @@ var _epilogue = require('epilogue');
 
 var _epilogue2 = _interopRequireDefault(_epilogue);
 
+var _humanReadableIds = require('human-readable-ids');
+
 var _verifyRequestSignature = require('./utils/verifyRequestSignature');
 
 var _verifyRequestSignature2 = _interopRequireDefault(_verifyRequestSignature);
@@ -79,7 +81,7 @@ var UIBOT = function () {
       });
 
       replyResource.create.write.before(function (req, res, context) {
-        console.log('before', req.body, res, context);
+        req.body.key = _humanReadableIds.hri.random().replace(/-/g, ' ');
         return context.continue;
       });
     }
@@ -182,7 +184,7 @@ var UIBOT = function () {
                       }
 
                       _context.next = 9;
-                      return (0, _db.getRepliesByKey)(passThroughParam);
+                      return (0, _db.getRepliesByKey)(passThroughParam.replace(/[^\w\s]/gi, '').trim().toLowerCase());
 
                     case 9:
                       autoReply = _context.sent;
@@ -319,7 +321,7 @@ var UIBOT = function () {
                 }
 
                 _context2.next = 13;
-                return (0, _db.getRepliesByKey)(message.text);
+                return (0, _db.getRepliesByKey)(message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase());
 
               case 13:
                 autoReply = _context2.sent;
