@@ -16,7 +16,7 @@ var _reactMessengerUi = require('react-messenger-ui');
 
 var ReactMessengerUI = _interopRequireWildcard(_reactMessengerUi);
 
-var _babelCore = require('babel-core');
+var _buble = require('buble');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -49,8 +49,17 @@ var EditorReply = function (_Component) {
             srcCode = _props.srcCode;
 
 
-        var transCode = (0, _babelCore.transform)(srcCode, { "presets": ["env", "stage-0", "react"], "plugins": ["transform-remove-strict-mode", "add-module-exports"] }).code;
+        var opts = {
+          transforms: {
+            dangerousForOf: true,
+            dangerousTaggedTemplateString: true
+          }
+        };
+
+        var transCode = (0, _buble.transform)(srcCode, opts).code;
         var finalCode = transCode.trim().replace(/^var \w+ =/, '').replace(/;$/, '');
+        finalCode = 'return (' + finalCode + ')';
+        //console.log('final code', finalCode)
 
         var scope = _extends({ React: _react2.default, Component: _react.Component }, ReactMessengerUI);
 
@@ -59,11 +68,13 @@ var EditorReply = function (_Component) {
           return scope[key];
         });
 
-        var evalFn = new (Function.prototype.bind.apply(Function, [null].concat(['React'], _toConsumableArray(scopeKeys), ['return (' + finalCode + ')'])))();
+        var evalFn = new (Function.prototype.bind.apply(Function, [null].concat(['React'], _toConsumableArray(scopeKeys), [finalCode])))();
+
         var ReplyComponent = evalFn.apply(undefined, [_react2.default].concat(_toConsumableArray(scopeValues)));
 
         return _react2.default.createElement(ReplyComponent, { recipient: recipient });
       } catch (e) {
+        console.log('err', e);
         var _recipient = this.props.recipient;
         var Message = ReactMessengerUI.Message,
             Text = ReactMessengerUI.Text;
