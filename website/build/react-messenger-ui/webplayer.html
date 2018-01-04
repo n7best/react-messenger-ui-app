@@ -78,7 +78,9 @@
       width: 30px;
     }
 
-
+    #status {
+      float: right;
+    }
 
 </style>
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -88,6 +90,7 @@
 <div class="container">
     <div class="toolbar">
         Reply To: <div id="pathLoader"><img src="/img/loader.gif" /></div><input type="text" id="replyText" disabled/>
+        <span id="status"></span>
     </div>
     <div id="editor"></div>
     <div class="actionbar" id="actionbar">
@@ -99,8 +102,9 @@
 <script>
     // state
     var code = '';
-    var btnSendToMessenger, path, editor;
-    var customPath = false;
+    var btnSendToMessenger, path, editor, timer, addtime = 0;
+    var customPath = false, loadingPath = false;
+    var replyID = false;
     var loader = document.getElementById('fbLoader')
     var pathLoader = document.getElementById('pathLoader')
 
@@ -143,7 +147,36 @@
       return response.json()
     }
 
+    function updateStatus(type){
+      var status = document.getElementById('status')
+      switch (type) {
+        case 'saving':
+          status.textContent = 'saving'
+          break;
+        case 'saved':
+          status.textContent = 'saved'
+          break;
+        case 'error':
+          status.textContent = 'unsave'
+          break;
+      }
+    }
+
+    function updateReply(code){
+      updateStatus('saving')
+      return fetch('/reply/'+replyID, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          response: code
+        })
+      })
+    }
+
     function createReply(code){
+      updateStatus('saving')
       return fetch('/reply', {
         method: 'POST',
         headers: {
@@ -157,12 +190,30 @@
 
     function updatePath(){
       var el = document.getElementById('replyText')
-      el.value = path
+      el.value = customPath || path
       pathLoader.style.display = 'none';
-      btnSendToMessenger = createSendToMessenger(params.path, document.getElementById('actionbar'));
+      btnSendToMessenger = createSendToMessenger(customPath || path, document.getElementById('actionbar'));
     }
 
-    function codeChange(e){
+    function delayUpdate(){
+      if(addtime === 0){
+        timer = false;
+        updateReply(getCode())
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(function(data) {
+          updateStatus('saved')
+        }).catch(function(error) {
+          updateStatus('unsaved')
+          console.log('request failed', error)
+        });
+      }else{
+        timer = setTimeout(delayUpdate, addtime)
+        addtime = 0;
+      }
+    }
+
+    function getCode(){
       // remove import lines
       var code = editor.getValue();
       var lines = code.split('\n');
@@ -172,19 +223,35 @@
 
       code = filterred.join('\n').replace(/(\r\n|\n|\r)/gm,"")
 
-      if(customPath){
+      return code;
+    }
 
+    function codeChange(e){
+      if(customPath){
+        if(timer){
+          addtime = 3;
+        }else{
+          timer = setTimeout(delayUpdate, 3000)
+        }
+      }else if(loadingPath){
+        // wait
       }else{
+        loadingPath = true;
+        pathLoader.style.display = 'inline-block';
+        updateStatus('saving')
         createReply(code)
         .then(checkStatus)
         .then(parseJSON)
         .then(function(data) {
-          customPath = true;
-          console.log('request succeeded with JSON response', data)
-          // request new path
-          btnSendToMessenger= createSendToMessenger('test', document.getElementById('actionbar'));
+          customPath = data.key;
+          replyID = data.id;
+          updatePath();
           FB.XFBML.parse()
+          loadingPath = false;
+          updateStatus('saved')
         }).catch(function(error) {
+          updateStatus('error')
+          loadingPath = false;
           console.log('request failed', error)
         })
 
@@ -216,7 +283,7 @@
 
       let el = document.createElement('div');
 
-      el.setAttribute('ref', ref)
+      el.setAttribute('ref', ref.replace(/ /g, '-'))
       el.setAttribute('messenger_app_id', '1887139748264265');
       el.setAttribute('page_id', "552483055096851");
       el.setAttribute('color', 'white');

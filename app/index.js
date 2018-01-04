@@ -120,7 +120,7 @@ class UIBOT {
 
             this.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
             if(passThroughParam){
-              let autoReply = await getRepliesByKey(passThroughParam.replace(/[^\w\s]/gi, '').trim().toLowerCase());
+              let autoReply = await getRepliesByKey(passThroughParam.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
 
               if(autoReply){
                 return this.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply.response });

@@ -184,7 +184,7 @@ var UIBOT = function () {
                       }
 
                       _context.next = 9;
-                      return (0, _db.getRepliesByKey)(passThroughParam.replace(/[^\w\s]/gi, '').trim().toLowerCase());
+                      return (0, _db.getRepliesByKey)(passThroughParam.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
 
                     case 9:
                       autoReply = _context.sent;
