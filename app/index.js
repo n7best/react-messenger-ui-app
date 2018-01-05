@@ -81,7 +81,7 @@ class UIBOT {
     );
     let res = render(path, props);
     render(path, props);
-    this.log('||| render:', res);
+    this.log('Render Reply:', JSON.stringify(res, undefined, 4));
     this.send(res);
 
     // typing off

@@ -126,7 +126,7 @@ var UIBOT = function () {
       this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: true }));
       var res = (0, _bot2.default)(path, props);
       (0, _bot2.default)(path, props);
-      this.log('||| render:', res);
+      this.log('Render Reply:', JSON.stringify(res, undefined, 4));
       this.send(res);
 
       // typing off
