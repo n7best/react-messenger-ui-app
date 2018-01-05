@@ -221,7 +221,8 @@
           return line.indexOf('import') != 0;
       });
 
-      code = filterred.join('\n').replace(/(\r\n|\n|\r)/gm,"")
+      // combine lines and filter out whitespaces :( i suck at regex
+      code = filterred.join('\n').replace(/\s+/g,' ').replace(/>\s+/g, '>').replace(/\s+(?=<)/g, '')
 
       return code;
     }

@@ -16,8 +16,8 @@ class EditorReply extends Component {
     })
   }
 
-  renderError(){
-    console.log('err', this.state.hasError.message)
+  renderError(e){
+    console.log('err', e ? e.message : this.state.hasError.message)
     const { recipient } = this.props
     const { Message, Text } = ReactMessengerUI;
 
@@ -46,7 +46,8 @@ class EditorReply extends Component {
       // create vm to isolate code excution
       vm.createContext(sandbox);
 
-      let transCode = transform(srcCode, opts).code;
+      // remove any escape
+      let transCode = transform(srcCode.replace(/\\/g, ""), opts).code;
       let finalCode = transCode.trim().replace(/^var \w+ =/, '').replace(/;$/, '');
       finalCode = `result = (${finalCode})`;
       // console.log('final code', finalCode)
@@ -64,7 +65,7 @@ class EditorReply extends Component {
       return <ReplyComponent recipient={recipient} />
 
     }catch(e){
-      return this.renderError();
+      return this.renderError(e);
     }
   }
 }

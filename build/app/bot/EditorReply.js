@@ -52,8 +52,8 @@ var EditorReply = function (_Component) {
     }
   }, {
     key: 'renderError',
-    value: function renderError() {
-      console.log('err', this.state.hasError.message);
+    value: function renderError(e) {
+      console.log('err', e ? e.message : this.state.hasError.message);
       var recipient = this.props.recipient;
       var Message = ReactMessengerUI.Message,
           Text = ReactMessengerUI.Text;
@@ -89,7 +89,8 @@ var EditorReply = function (_Component) {
           // create vm to isolate code excution
         };vm.createContext(sandbox);
 
-        var transCode = (0, _buble.transform)(srcCode, opts).code;
+        // remove any escape
+        var transCode = (0, _buble.transform)(srcCode.replace(/\\/g, ""), opts).code;
         var finalCode = transCode.trim().replace(/^var \w+ =/, '').replace(/;$/, '');
         finalCode = 'result = (' + finalCode + ')';
         // console.log('final code', finalCode)
@@ -105,7 +106,7 @@ var EditorReply = function (_Component) {
         var ReplyComponent = sandbox.result;
         return _react2.default.createElement(ReplyComponent, { recipient: recipient });
       } catch (e) {
-        return this.renderError();
+        return this.renderError(e);
       }
     }
   }]);
