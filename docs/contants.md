@@ -60,6 +60,7 @@ List of all avaiable you can access through `CONSTANTS` variable.
 | FILE          | file
 | TEMPLATE      | template
 
+
 ## ATTACHMENT_SOURCE
 
 | Property      | Value
@@ -67,3 +68,20 @@ List of all avaiable you can access through `CONSTANTS` variable.
 | URL           | url
 | FILE          | file
 | SAVED_ASSET   | attachment_id
+
+
+## QUICKREPLY_TYPE
+
+| Property      | Value
+| --------      | ----
+| TEXT          | text
+| LOCATION      | location
+
+
+## WEBVIEW_HEIGHT_RATIO
+
+| Property      | Value
+| --------      | ----
+| COMPACT       | compact
+| TALL          | tall
+| FULL          | full

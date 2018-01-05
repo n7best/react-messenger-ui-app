@@ -1,6 +1,8 @@
 {
   "docs": {
     "Basics": ["quick-start", "basics", "constants"],
-    "Component": ["componentMessage", "componentSenderAction", "componentAttachment"]
+    "Component": ["componentMessage", "componentSenderAction", "componentAttachment", "componentQuickReply", "componentURLButton",
+      "componentPostbackButton", "componentShareButton"
+    ]
   }
 }
