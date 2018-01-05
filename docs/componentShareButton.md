@@ -11,7 +11,7 @@ Button that enable to share content.
 
 ```BotWebPlayer path=sharebutton
 import React, { Component } from 'react';
-import { Message, ButtonTemplate, ShareButton } from 'react-messenger-ui';
+import { Message, GenericTemplate, GenericElement, ShareButton } from 'react-messenger-ui';
 
 class AwesomeChatBot extends Component {
   render() {
@@ -19,12 +19,15 @@ class AwesomeChatBot extends Component {
 
     return (
       <Message recipient={recipient}>
-        <ButtonTemplate>
-          Share Button
-          <ShareButton>
-              Trigger Share
-           </ShareButton>
-        </ButtonTemplate>
+        <GenericTemplate>
+            <GenericElement
+              title="rift"
+              subtitle="next-generation virtual reality"
+              imageUrl="https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/rift.png?raw=true"
+            >
+              <ShareButton />
+            </GenericElement>
+        </GenericTemplate>
       </Message>
     );
   }

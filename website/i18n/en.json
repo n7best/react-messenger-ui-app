@@ -6,6 +6,7 @@
     "tagline": "Build Bot using JavaScript and React",
     "basics": "Learn Basics",
     "componentAttachment": "Attachment",
+    "componentCallButton": "Call Button",
     "componentMessage": "Message",
     "componentPostbackButton": "Postback Button",
     "componentQuickReply": "QuickReply",
