@@ -17,14 +17,14 @@ export default [
   },
   {
     key: "urlbutton",
-    response: "class AwesomeChatBot extends Component {  render() {    const { recipient } = this.props;    return (      <Message recipient={recipient}>        <ButtonTemplate>          Display an URL Button          <URLButton url=\"https://www.oculus.com/en-us/rift/\">            Open Web URL          </URLButton>        </ButtonTemplate>      </Message>    );  }}"
+    response: "class AwesomeChatBot extends Component {  render() {    const { recipient } = this.props;    return (      <Message recipient={recipient}>        <ButtonTemplate>         URL Button          <URLButton url=\"https://www.oculus.com/en-us/rift/\">            Open Web URL          </URLButton>        </ButtonTemplate>      </Message>    );  }}"
   },
   {
     key: "postbackbutton",
-    response: "class AwesomeChatBot extends Component {  render() {    const { recipient } = this.props;    return (      <Message recipient={recipient}>        <ButtonTemplate>          Display an Postback Button          <PostbackButton payload=\"DEVELOPER_DEFINED_PAYLOAD\">              Trigger Postback           </PostbackButton>        </ButtonTemplate>      </Message>    );  }}"
+    response: "class AwesomeChatBot extends Component {  render() {    const { recipient } = this.props;    return (      <Message recipient={recipient}>        <ButtonTemplate>         Postback Button          <PostbackButton payload=\"DEVELOPER_DEFINED_PAYLOAD\">              Trigger Postback           </PostbackButton>        </ButtonTemplate>      </Message>    );  }}"
   },
   {
     key: "sharebutton",
-    response: "class AwesomeChatBot extends Component {  render() {    const { recipient } = this.props;    return (      <Message recipient={recipient}>        <ButtonTemplate>          Display an Share Button          <ShareButton>              Trigger Share           </ShareButton>        </ButtonTemplate>      </Message>    );  }}"
+    response: "class AwesomeChatBot extends Component {  render() {    const { recipient } = this.props;    return (      <Message recipient={recipient}>        <ButtonTemplate>         Share Button          <ShareButton>              Trigger Share           </ShareButton>        </ButtonTemplate>      </Message>    );  }}"
   },
 ]

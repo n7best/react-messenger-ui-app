@@ -18,7 +18,7 @@ class AwesomeChatBot extends Component {
     return (
       <Message recipient={recipient}>
         <ButtonTemplate>
-          Display an URL Button
+          URL Button
           <URLButton url="https://www.oculus.com/en-us/rift/">
             Open Web URL
           </URLButton>

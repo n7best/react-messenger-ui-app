@@ -20,7 +20,7 @@ class AwesomeChatBot extends Component {
     return (
       <Message recipient={recipient}>
         <ButtonTemplate>
-          Display an Share Button
+          Share Button
           <ShareButton>
               Trigger Share
            </ShareButton>

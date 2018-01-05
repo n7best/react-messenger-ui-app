@@ -18,7 +18,7 @@ class AwesomeChatBot extends Component {
     return (
       <Message recipient={recipient}>
         <ButtonTemplate>
-          Display an Postback Button
+          Postback Button
           <PostbackButton payload="DEVELOPER_DEFINED_PAYLOAD">
               Trigger Postback
            </PostbackButton>
