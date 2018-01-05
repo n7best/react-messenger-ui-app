@@ -58,7 +58,7 @@ function BotWebPlayer(md) {
       '<div class="web-player">' +
       htmlForCodeBlock(sampleCode) +
       `<iframe style="margin-top: 4" width="880" height="${
-        parseParams(paramsString).platform === 'android' ? '525' : '520'
+        parseParams(paramsString).platform === 'android' ? '625' : '620'
       }" src="/webplayer.html${hash}" frame-border="0"></iframe>` +
       `</div>` +
       '\n\n'

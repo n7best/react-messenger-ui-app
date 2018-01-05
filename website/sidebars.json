@@ -1,5 +1,6 @@
 {
   "docs": {
-    "Basics": ["quick-start", "basics"]
+    "Basics": ["quick-start", "basics", "constants"],
+    "Component": ["componentMessage"]
   }
 }

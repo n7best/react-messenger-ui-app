@@ -5,13 +5,16 @@
     "previous": "Previous",
     "tagline": "Build Bot using JavaScript and React",
     "basics": "Learn Basics",
+    "componentMessage": "Message",
+    "constants": "Constants",
     "privacy": "Privacy Policy",
     "quick-start": "Quick Start",
     "Quick Start": "Quick Start",
     "Docs": "Docs",
     "GitHub": "GitHub",
     "Demo Bot Repo": "Demo Bot Repo",
-    "Basics": "Basics"
+    "Basics": "Basics",
+    "Component": "Component"
   },
   "pages-strings": {
     "Help Translate|recruit community translators for your project": "Help Translate",

@@ -1853,3 +1853,16 @@ code {
 .web-player pre {
     display: none;
 }
+
+table thead {
+    border-bottom: 1px solid #0081ff;
+    display: table-header-group;
+}
+
+table thead > tr {
+    background: #0081ff !important;
+}
+
+table thead tr > th {
+    color: #fff;
+}
