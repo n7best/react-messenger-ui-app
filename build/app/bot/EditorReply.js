@@ -33,19 +33,47 @@ var vm = require('vm');
 var EditorReply = function (_Component) {
   _inherits(EditorReply, _Component);
 
-  function EditorReply() {
+  function EditorReply(props) {
     _classCallCheck(this, EditorReply);
 
-    return _possibleConstructorReturn(this, (EditorReply.__proto__ || Object.getPrototypeOf(EditorReply)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (EditorReply.__proto__ || Object.getPrototypeOf(EditorReply)).call(this, props));
+
+    _this.state = { hasError: false };
+    return _this;
   }
 
   _createClass(EditorReply, [{
+    key: 'componentDidCatch',
+    value: function componentDidCatch(error, info) {
+      console.log('error', error, info);
+      this.setState({
+        hasError: error
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
+      if (this.state.hasError) {
+        console.log('err', this.state.hasError.message);
+        var recipient = this.props.recipient;
+        var Message = ReactMessengerUI.Message,
+            Text = ReactMessengerUI.Text;
+
+
+        return _react2.default.createElement(
+          Message,
+          { recipient: recipient },
+          _react2.default.createElement(
+            Text,
+            null,
+            'Error! ' + this.state.hasError.message
+          )
+        );
+      }
       try {
         var sandbox = _extends({ result: null, React: _react2.default, Component: _react.Component }, ReactMessengerUI);
         var _props = this.props,
-            recipient = _props.recipient,
+            _recipient = _props.recipient,
             srcCode = _props.srcCode;
 
         var opts = {
@@ -63,24 +91,28 @@ var EditorReply = function (_Component) {
         finalCode = 'result = (' + finalCode + ')';
         // console.log('final code', finalCode)
 
-        vm.runInContext(finalCode, sandbox);
+        try {
+          vm.runInContext(finalCode, sandbox, { displayErrors: true });
+        } catch (e) {
+          throw e;
+        }
 
         // console.log('final result: ',sandbox.result);
         // const ReplyComponent = evalFn(React, ...scopeValues)
         var ReplyComponent = sandbox.result;
-        return _react2.default.createElement(ReplyComponent, { recipient: recipient });
+        return _react2.default.createElement(ReplyComponent, { recipient: _recipient });
       } catch (e) {
         console.log('err', e.message);
-        var _recipient = this.props.recipient;
-        var Message = ReactMessengerUI.Message,
-            Text = ReactMessengerUI.Text;
+        var _recipient2 = this.props.recipient;
+        var _Message = ReactMessengerUI.Message,
+            _Text = ReactMessengerUI.Text;
 
 
         return _react2.default.createElement(
-          Message,
-          { recipient: _recipient },
+          _Message,
+          { recipient: _recipient2 },
           _react2.default.createElement(
-            Text,
+            _Text,
             null,
             'Error! ' + e.message
           )

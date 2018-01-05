@@ -4,8 +4,32 @@ import { transform } from 'buble';
 const vm = require('vm');
 
 class EditorReply extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  componentDidCatch(error, info) {
+    console.log('error', error, info)
+    this.setState({
+      hasError: error
+    })
+  }
 
   render() {
+    if (this.state.hasError) {
+      console.log('err', this.state.hasError.message)
+      const { recipient } = this.props
+      const { Message, Text } = ReactMessengerUI;
+
+      return (
+        <Message recipient={recipient}>
+          <Text>
+            { `Error! ${this.state.hasError.message}`}
+          </Text>
+        </Message>
+      );
+    }
     try{
       const sandbox = { result: null, React, Component, ...ReactMessengerUI };
       const { recipient, srcCode } = this.props
@@ -25,7 +49,12 @@ class EditorReply extends Component {
       finalCode = `result = (${finalCode})`;
       // console.log('final code', finalCode)
 
-      vm.runInContext(finalCode, sandbox);
+      try{
+        vm.runInContext(finalCode, sandbox, { displayErrors: true });
+
+      } catch (e) {
+        throw e;
+      }
 
       // console.log('final result: ',sandbox.result);
       // const ReplyComponent = evalFn(React, ...scopeValues)
