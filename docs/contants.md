@@ -39,3 +39,31 @@ List of all avaiable you can access through `CONSTANTS` variable.
 | TRANSPORTATION_UPDATE | TRANSPORTATION_UPDATE
 | FEATURE_FUNCTIONALITY_UPDATE | FEATURE_FUNCTIONALITY_UPDATE
 | TICKET_UPDATE         | TICKET_UPDATE
+
+
+## SENDER_ACTIONS
+
+| Property      | Value
+| --------      | ----
+| MARK_SEEN     | mark_seen
+| TYPING_ON     | typing_on
+| TYPING_OFF    | typing_off
+
+
+## ATTACHMENT_TYPE
+
+| Property      | Value
+| --------      | ----
+| IMAGE         | image
+| AUDIO         | audio
+| VIDEO         | video
+| FILE          | file
+| TEMPLATE      | template
+
+## ATTACHMENT_SOURCE
+
+| Property      | Value
+| --------      | ----
+| URL           | url
+| FILE          | file
+| SAVED_ASSET   | attachment_id

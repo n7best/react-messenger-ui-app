@@ -1,6 +1,6 @@
 {
   "docs": {
     "Basics": ["quick-start", "basics", "constants"],
-    "Component": ["componentMessage"]
+    "Component": ["componentMessage", "componentSenderAction", "componentAttachment"]
   }
 }
