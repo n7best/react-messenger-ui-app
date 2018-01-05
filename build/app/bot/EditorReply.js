@@ -51,29 +51,32 @@ var EditorReply = function (_Component) {
       });
     }
   }, {
+    key: 'renderError',
+    value: function renderError() {
+      console.log('err', this.state.hasError.message);
+      var recipient = this.props.recipient;
+      var Message = ReactMessengerUI.Message,
+          Text = ReactMessengerUI.Text;
+
+
+      return _react2.default.createElement(
+        Message,
+        { recipient: recipient },
+        _react2.default.createElement(
+          Text,
+          null,
+          'Error! ' + this.state.hasError.message
+        )
+      );
+    }
+  }, {
     key: 'render',
     value: function render() {
-      if (this.state.hasError) {
-        console.log('err', this.state.hasError.message);
-        var recipient = this.props.recipient;
-        var Message = ReactMessengerUI.Message,
-            Text = ReactMessengerUI.Text;
-
-
-        return _react2.default.createElement(
-          Message,
-          { recipient: recipient },
-          _react2.default.createElement(
-            Text,
-            null,
-            'Error! ' + this.state.hasError.message
-          )
-        );
-      }
+      if (this.state.hasError) return this.renderError();
       try {
         var sandbox = _extends({ result: null, React: _react2.default, Component: _react.Component }, ReactMessengerUI);
         var _props = this.props,
-            _recipient = _props.recipient,
+            recipient = _props.recipient,
             srcCode = _props.srcCode;
 
         var opts = {
@@ -100,23 +103,9 @@ var EditorReply = function (_Component) {
         // console.log('final result: ',sandbox.result);
         // const ReplyComponent = evalFn(React, ...scopeValues)
         var ReplyComponent = sandbox.result;
-        return _react2.default.createElement(ReplyComponent, { recipient: _recipient });
+        return _react2.default.createElement(ReplyComponent, { recipient: recipient });
       } catch (e) {
-        console.log('err', e.message);
-        var _recipient2 = this.props.recipient;
-        var _Message = ReactMessengerUI.Message,
-            _Text = ReactMessengerUI.Text;
-
-
-        return _react2.default.createElement(
-          _Message,
-          { recipient: _recipient2 },
-          _react2.default.createElement(
-            _Text,
-            null,
-            'Error! ' + e.message
-          )
-        );
+        return this.renderError();
       }
     }
   }]);

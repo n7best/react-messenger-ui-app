@@ -16,20 +16,22 @@ class EditorReply extends Component {
     })
   }
 
-  render() {
-    if (this.state.hasError) {
-      console.log('err', this.state.hasError.message)
-      const { recipient } = this.props
-      const { Message, Text } = ReactMessengerUI;
+  renderError(){
+    console.log('err', this.state.hasError.message)
+    const { recipient } = this.props
+    const { Message, Text } = ReactMessengerUI;
 
-      return (
-        <Message recipient={recipient}>
-          <Text>
-            { `Error! ${this.state.hasError.message}`}
-          </Text>
-        </Message>
-      );
-    }
+    return (
+      <Message recipient={recipient}>
+        <Text>
+          { `Error! ${this.state.hasError.message}`}
+        </Text>
+      </Message>
+    );
+  }
+
+  render() {
+    if (this.state.hasError) return this.renderError();
     try{
       const sandbox = { result: null, React, Component, ...ReactMessengerUI };
       const { recipient, srcCode } = this.props
@@ -62,17 +64,7 @@ class EditorReply extends Component {
       return <ReplyComponent recipient={recipient} />
 
     }catch(e){
-      console.log('err', e.message)
-      const { recipient } = this.props
-      const { Message, Text } = ReactMessengerUI;
-
-      return (
-        <Message recipient={recipient}>
-          <Text>
-            { `Error! ${e.message}`}
-          </Text>
-        </Message>
-      );
+      return this.renderError();
     }
   }
 }
