@@ -25,10 +25,10 @@ export default [
   },
   {
     key: "sharebutton",
-    response: "<Message recipient={recipient}><GenericTemplate><GenericElement title=\"rift\" subtitle=\"next-generation virtual reality\" imageUrl=\"https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/rift.png?raw=true\" ><ShareButton /></GenericElement></GenericTemplate></Message>"
+    response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><GenericTemplate><GenericElement title=\"rift\" subtitle=\"next-generation virtual reality\" imageUrl=\"https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/rift.png?raw=true\" ><ShareButton /></GenericElement></GenericTemplate></Message>); } }"
   },
   {
     key: "callbutton",
-    response: "<Message recipient={recipient}><GenericTemplate><GenericElement title=\"rift\" subtitle=\"next-generation virtual reality\" imageUrl=\"https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/rift.png?raw=true\" ><ShareButton /></GenericElement></GenericTemplate></Message>"
+    response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Call Button<CallButton payload=\"+16505551234\">Call Phone Number</CallButton></ButtonTemplate></Message>); } }"
   },
 ]
