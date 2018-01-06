@@ -42,5 +42,9 @@ export default [
   {
     key: "gameplaybutton",
     response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Game Button<GameplayButton payload=\"DEVELOPER_DEFINED_PAYLOAD\">Play Game</GameplayButton></ButtonTemplate></Message>); } }"
+  },
+  {
+    key: "buttontemplate",
+    response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>This is test text<URLButton url=\"https://www.oculus.com/en-us/rift/\">Open Web URL</URLButton><PostbackButton payload=\"DEVELOPER_DEFINED_PAYLOAD\">Trigger Postback</PostbackButton><CallButton payload=\"+16505551234\">Call Phone Number</CallButton></ButtonTemplate></Message>); } }"
   }
 ]

@@ -20,12 +20,14 @@
     "privacy": "Privacy Policy",
     "quick-start": "Quick Start",
     "Quick Start": "Quick Start",
+    "templateButton": "Button Template",
     "Docs": "Docs",
     "GitHub": "GitHub",
     "Demo Bot Repo": "Demo Bot Repo",
     "Basics": "Basics",
     "Basic Components": "Basic Components",
-    "Buttons": "Buttons"
+    "Buttons": "Buttons",
+    "Template": "Template"
   },
   "pages-strings": {
     "Help Translate|recruit community translators for your project": "Help Translate",
