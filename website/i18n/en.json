@@ -8,6 +8,7 @@
     "componentAttachment": "Attachment",
     "componentCallButton": "Call Button",
     "componentLoginButton": "Login Button",
+    "componentLogoutButton": "Logout Button",
     "componentMessage": "Message",
     "componentPostbackButton": "Postback Button",
     "componentQuickReply": "QuickReply",

@@ -20,7 +20,7 @@ class AwesomeChatBot extends Component {
         <ButtonTemplate>
           Login Button
           <LoginButton
-            url={https://www.oculus.com/en-us/rift/}
+            url="https://www.oculus.com/en-us/rift/"
           />
         </ButtonTemplate>
       </Message>

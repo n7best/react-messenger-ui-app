@@ -33,6 +33,10 @@ export default [
   },
   {
     key: "loginbutton",
-    response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Login Button<LoginButton url={https://www.oculus.com/en-us/rift/} /></ButtonTemplate></Message>); } }"
+    response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Login Button<LoginButton url=\"https://www.oculus.com/en-us/rift/\" /></ButtonTemplate></Message>); } }"
+  },
+  {
+    key: "loginbutton",
+    response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Logout Button<LogoutButton /></ButtonTemplate></Message>); } }"
   }
 ]

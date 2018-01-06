@@ -29,5 +29,8 @@ exports.default = [{
   response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Call Button<CallButton payload=\"+16505551234\">Call Phone Number</CallButton></ButtonTemplate></Message>); } }"
 }, {
   key: "loginbutton",
-  response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Login Button<LoginButton url={https://www.oculus.com/en-us/rift/} /></ButtonTemplate></Message>); } }"
+  response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Login Button<LoginButton url=\"https://www.oculus.com/en-us/rift/\" /></ButtonTemplate></Message>); } }"
+}, {
+  key: "loginbutton",
+  response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Logout Button<LogoutButton /></ButtonTemplate></Message>); } }"
 }];
