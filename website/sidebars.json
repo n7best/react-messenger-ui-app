@@ -1,8 +1,7 @@
 {
   "docs": {
     "Basics": ["quick-start", "basics", "constants"],
-    "Component": ["componentMessage", "componentSenderAction", "componentAttachment", "componentQuickReply", "componentURLButton",
-      "componentPostbackButton", "componentShareButton", "componentCallButton", "componentLoginButton", "componentLogoutButton", "componentGameplayButton"
-    ]
+    "Basic Components": ["componentMessage", "componentSenderAction", "componentAttachment", "componentQuickReply"],
+    "Buttons": ["componentURLButton","componentPostbackButton", "componentShareButton", "componentCallButton", "componentLoginButton", "componentLogoutButton", "componentGameplayButton"]
   }
 }

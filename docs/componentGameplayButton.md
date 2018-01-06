@@ -5,6 +5,8 @@ title: Gameplay Button
 
 Button that an launches Instant Game that is associated with the bot page.
 
+Demo will not work since our bot don't have game associated with page.
+
 ## Example
 
 ```BotWebPlayer path=gameplaybutton
