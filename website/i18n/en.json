@@ -7,6 +7,7 @@
     "basics": "Learn Basics",
     "componentAttachment": "Attachment",
     "componentCallButton": "Call Button",
+    "componentGameplayButton": "Gameplay Button",
     "componentLoginButton": "Login Button",
     "componentLogoutButton": "Logout Button",
     "componentMessage": "Message",

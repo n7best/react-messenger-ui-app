@@ -38,5 +38,9 @@ export default [
   {
     key: "logoutbutton",
     response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Logout Button<LogoutButton /></ButtonTemplate></Message>); } }"
+  },
+  {
+    key: "gameplaybutton",
+    response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>Game Button<GameplayButton payload=\"DEVELOPER_DEFINED_PAYLOAD\">Play Game</GameplayButton></ButtonTemplate></Message>); } }"
   }
 ]
