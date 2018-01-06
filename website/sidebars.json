@@ -3,6 +3,6 @@
     "Basics": ["quick-start", "basics", "constants"],
     "Basic Components": ["componentMessage", "componentSenderAction", "componentAttachment", "componentQuickReply"],
     "Buttons": ["componentURLButton","componentPostbackButton", "componentShareButton", "componentCallButton", "componentLoginButton", "componentLogoutButton", "componentGameplayButton"],
-    "Template": ["templateButton"]
+    "Template": ["templateButton", "templateGeneric"]
   }
 }

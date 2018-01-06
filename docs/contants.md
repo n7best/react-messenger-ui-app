@@ -85,3 +85,11 @@ List of all avaiable you can access through `CONSTANTS` variable.
 | COMPACT       | compact
 | TALL          | tall
 | FULL          | full
+
+
+## IMAGE_ASPECT_RATIO
+
+| Property      | Value
+| --------      | ----
+| COMPACT       | compact
+| LARGE         | large

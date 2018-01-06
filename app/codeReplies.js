@@ -46,5 +46,9 @@ export default [
   {
     key: "buttontemplate",
     response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ButtonTemplate>This is test text<URLButton url=\"https://www.oculus.com/en-us/rift/\">Open Web URL</URLButton><PostbackButton payload=\"DEVELOPER_DEFINED_PAYLOAD\">Trigger Postback</PostbackButton><CallButton payload=\"+16505551234\">Call Phone Number</CallButton></ButtonTemplate></Message>); } }"
+  },
+  {
+    key: "generictemplate",
+    response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><GenericTemplate><GenericElement title=\"rift\" subtitle=\"next-generation virtual reality\" imageUrl=\"https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/rift.png?raw=true\" ><URLButton url=\"https://www.oculus.com/en-us/rift/\">Open Web URL</URLButton><PostbackButton payload=\"magic payload\">Call Postback</PostbackButton></GenericElement></GenericTemplate></Message>); } }"
   }
 ]
