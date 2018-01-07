@@ -54,5 +54,9 @@ export default [
   {
     key: "listtemplate",
     response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ListTemplate><ListElement title=\"rift\" subtitle=\"next-generation virtual reality\" imageUrl=\"https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/rift.png?raw=true\" ><URLButton url=\"https://www.oculus.com/en-us/rift/\">Open Web URL</URLButton></ListElement><ListElement title=\"touch\" subtitle=\"Your Hands, Now in VR\" imageUrl=\"https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/touch.png?raw=true\" ><URLButton url=\"https://www.oculus.com/en-us/touch/\">Open Web URL</URLButton></ListElement><URLButton url=\"https://www.oculus.com/en-us/touch/\">Open Web URL</URLButton></ListTemplate></Message>); } }"
+  },
+  {
+    key: "mediatemplate",
+    response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><MediaTemplate><MediaElement type={CONSTANTS.MEDIA_TYPE.IMAGE} url=\"https://www.facebook.com/552483055096851/photos/a.552483101763513.1073741825.552483055096851/552484795096677/?type=3&theater\" /></MediaTemplate></Message>); } }"
   }
 ]

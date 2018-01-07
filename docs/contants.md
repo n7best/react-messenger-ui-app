@@ -101,3 +101,11 @@ List of all avaiable you can access through `CONSTANTS` variable.
 | --------      | ----
 | COMPACT       | compact
 | LARGE         | large
+
+
+## MEDIA_TYPE
+
+| Property      | Value
+| --------      | ----
+| IMAGE         | image
+| VIDEO         | video
