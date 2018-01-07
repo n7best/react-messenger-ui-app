@@ -1,6 +1,6 @@
 {
   "docs": {
-    "Basics": ["quick-start", "basics", "constants"],
+    "Basics": ["quick-start", "basics", "constants", "componentPersistentMenu"],
     "Basic Components": ["componentMessage", "componentSenderAction", "componentAttachment", "componentQuickReply"],
     "Buttons": ["componentURLButton","componentPostbackButton", "componentShareButton", "componentCallButton", "componentLoginButton", "componentLogoutButton", "componentGameplayButton"],
     "Template": ["templateButton", "templateGeneric", "templateList", "templateMedia", "templateOpenGraph", "templateReceipt"]

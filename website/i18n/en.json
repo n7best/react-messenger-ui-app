@@ -11,6 +11,7 @@
     "componentLoginButton": "Login Button",
     "componentLogoutButton": "Logout Button",
     "componentMessage": "Message",
+    "componentPersistentMenu": "Persistent Menu",
     "componentPostbackButton": "Postback Button",
     "componentQuickReply": "QuickReply",
     "componentSenderAction": "SenderAction",
