@@ -1,5 +1,5 @@
 ---
-id: tempalteList
+id: templateList
 title: List Template
 ---
 
