@@ -50,7 +50,16 @@ var UIBOT = function () {
 
     this.credentials = credentials;
     this.cfg = Object.assign({
-      get_start_path: 'BOTPATH:/newuser'
+      get_start_path: 'BOTPATH:/newuser',
+      echo_path: '/echo',
+      message_path: '/message',
+      attachment_path: '/attachment',
+      webhook_path: '/webhook',
+      menu_path: '/menu',
+      authsucess_path: '/authsuccess',
+      typing_path: '/typing',
+      sendApiUrl: 'https://graph.facebook.com/v2.6/me/messages',
+      profileApiUrl: 'https://graph.facebook.com/v2.6/me/messenger_profile'
     }, configs);
     this.server = server;
     this.server.use(_bodyParser2.default.json({
@@ -63,9 +72,9 @@ var UIBOT = function () {
     key: 'initRoutes',
     value: function initRoutes() {
       // token verification
-      this.server.get('/webhook', this.webhookGetController.bind(this));
+      this.server.get(this.cfg.webhook_path, this.webhookGetController.bind(this));
       // all message routes
-      this.server.post('/webhook', this.webhookPostController.bind(this));
+      this.server.post(this.cfg.webhook_path, this.webhookPostController.bind(this));
 
       // resful routes
       _epilogue2.default.initialize({
@@ -94,7 +103,7 @@ var UIBOT = function () {
         get_started: {
           payload: this.cfg.get_start_path
         }
-      }, (0, _bot2.default)('/menu')));
+      }, (0, _bot2.default)(this.cfg.menu_path)));
     }
   }, {
     key: 'start',
@@ -123,14 +132,14 @@ var UIBOT = function () {
 
       this.log('Render:', path, props);
       // typing on
-      this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: true }));
+      this.send((0, _bot2.default)(this.cfg.typing_path, { recipient: props.recipient, typing: true }));
       var res = (0, _bot2.default)(path, props);
       (0, _bot2.default)(path, props);
       this.log('Render Reply:', JSON.stringify(res, undefined, 4));
       this.send(res);
 
       // typing off
-      this.send((0, _bot2.default)('/typing', { recipient: props.recipient, typing: false }));
+      this.send((0, _bot2.default)(this.cfg.typing_path, { recipient: props.recipient, typing: false }));
     }
   }, {
     key: 'webhookGetController',
@@ -197,12 +206,12 @@ var UIBOT = function () {
                       return _context.abrupt('return', _this2.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply.response }));
 
                     case 12:
-                      _this2.render('/message', { recipient: messagingEvent.sender, text: passThroughParam });
+                      _this2.render(_this2.cfg.message_path, { recipient: messagingEvent.sender, text: passThroughParam });
                       _context.next = 16;
                       break;
 
                     case 15:
-                      _this2.render('/authsuccess', { recipient: messagingEvent.sender });
+                      _this2.render(_this2.cfg.authsucess_path, { recipient: messagingEvent.sender });
 
                     case 16:
                       _context.next = 19;
@@ -274,7 +283,7 @@ var UIBOT = function () {
         var botpath = payload.substring(8);
         this.render(botpath, { recipient: sender });
       } else {
-        this.render('/message', { recipient: sender, text: payload });
+        this.render(this.cfg.message_path, { recipient: sender, text: payload });
       }
     }
   }, {
@@ -303,7 +312,7 @@ var UIBOT = function () {
                 }
 
                 this.log("Received echo for message", message);
-                return _context2.abrupt('return', this.render('/echo', _extends({ recipient: event.sender }, message)));
+                return _context2.abrupt('return', this.render(this.cfg.echo_path, _extends({ recipient: event.sender }, message)));
 
               case 7:
                 if (!message.quick_reply) {
@@ -334,7 +343,7 @@ var UIBOT = function () {
                 return _context2.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response }));
 
               case 16:
-                return _context2.abrupt('return', this.render('/message', { recipient: event.sender, text: message.text }));
+                return _context2.abrupt('return', this.render(this.cfg.message_path, { recipient: event.sender, text: message.text }));
 
               case 19:
                 if (!message.attachments) {
@@ -342,7 +351,7 @@ var UIBOT = function () {
                   break;
                 }
 
-                return _context2.abrupt('return', this.render('/attachment', { recipient: event.sender, text: message.text }));
+                return _context2.abrupt('return', this.render(this.cfg.attachment_path, { recipient: event.sender, text: message.text }));
 
               case 21:
               case 'end':
@@ -400,7 +409,7 @@ var UIBOT = function () {
       var form = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
       (0, _request2.default)({
-        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        uri: this.cfg.sendApiUrl,
         qs: { access_token: this.credentials.PAGE_ACCESS_TOKEN },
         method: 'POST',
         json: data

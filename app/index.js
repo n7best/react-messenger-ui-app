@@ -12,7 +12,16 @@ class UIBOT {
   constructor(server, credentials, configs){
     this.credentials = credentials;
     this.cfg = Object.assign({
-      get_start_path: 'BOTPATH:/newuser'
+      get_start_path: 'BOTPATH:/newuser',
+      echo_path: '/echo',
+      message_path: '/message',
+      attachment_path: '/attachment',
+      webhook_path: '/webhook',
+      menu_path: '/menu',
+      authsucess_path: '/authsuccess',
+      typing_path: '/typing',
+      sendApiUrl: 'https://graph.facebook.com/v2.6/me/messages',
+      profileApiUrl: 'https://graph.facebook.com/v2.6/me/messenger_profile'
     }, configs);
     this.server = server;
     this.server.use(bodyParser.json({
@@ -23,9 +32,9 @@ class UIBOT {
 
   initRoutes(){
     // token verification
-    this.server.get('/webhook', this.webhookGetController.bind(this));
+    this.server.get(this.cfg.webhook_path, this.webhookGetController.bind(this));
     // all message routes
-    this.server.post('/webhook', this.webhookPostController.bind(this));
+    this.server.post(this.cfg.webhook_path, this.webhookPostController.bind(this));
 
     // resful routes
     epilogue.initialize({
@@ -53,7 +62,7 @@ class UIBOT {
       get_started: {
         payload: this.cfg.get_start_path
       }
-    }, render('/menu')));
+    }, render(this.cfg.menu_path)));
   }
 
   start() {
@@ -77,7 +86,7 @@ class UIBOT {
     this.log('Render:', path, props);
     // typing on
     this.send(
-      render('/typing', { recipient: props.recipient, typing: true })
+      render(this.cfg.typing_path, { recipient: props.recipient, typing: true })
     );
     let res = render(path, props);
     render(path, props);
@@ -86,7 +95,7 @@ class UIBOT {
 
     // typing off
     this.send(
-      render('/typing', { recipient: props.recipient, typing: false })
+      render(this.cfg.typing_path, { recipient: props.recipient, typing: false })
     );
   }
 
@@ -125,9 +134,9 @@ class UIBOT {
               if(autoReply){
                 return this.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply.response });
               }
-              this.render('/message', { recipient: messagingEvent.sender, text: passThroughParam })
+              this.render(this.cfg.message_path, { recipient: messagingEvent.sender, text: passThroughParam })
             }else{
-              this.render('/authsuccess', { recipient: messagingEvent.sender })
+              this.render(this.cfg.authsucess_path, { recipient: messagingEvent.sender })
             }
 
           } else if (messagingEvent.message) {
@@ -176,7 +185,7 @@ class UIBOT {
       let botpath = payload.substring(8);
       this.render(botpath, { recipient: sender })
     }else{
-      this.render('/message', { recipient: sender, text: payload })
+      this.render(this.cfg.message_path, { recipient: sender, text: payload })
     }
   }
 
@@ -192,7 +201,7 @@ class UIBOT {
     // special cases
     if (message.is_echo) {
       this.log("Received echo for message", message);
-      return this.render('/echo', { recipient: event.sender, ...message })
+      return this.render(this.cfg.echo_path, { recipient: event.sender, ...message })
     } else if (message.quick_reply) {
       this.log("Quick reply for message %s with payload %s", message.mid, message.quick_reply);
       return this.navigate(message.quick_reply.payload, event.sender);
@@ -205,9 +214,9 @@ class UIBOT {
         return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response });
       }
 
-      return this.render('/message', { recipient: event.sender, text: message.text });
+      return this.render(this.cfg.message_path, { recipient: event.sender, text: message.text });
     } else if (message.attachments) {
-      return this.render('/attachment', { recipient: event.sender, text: message.text });
+      return this.render(this.cfg.attachment_path, { recipient: event.sender, text: message.text });
     }
   }
 
@@ -239,7 +248,7 @@ class UIBOT {
 
   send(data, form = false) {
     request({
-      uri: 'https://graph.facebook.com/v2.6/me/messages',
+      uri: this.cfg.sendApiUrl,
       qs: { access_token: this.credentials.PAGE_ACCESS_TOKEN },
       method: 'POST',
       json: data
