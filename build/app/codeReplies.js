@@ -42,4 +42,7 @@ exports.default = [{
 }, {
   key: "generictemplate",
   response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><GenericTemplate><GenericElement title=\"rift\" subtitle=\"next-generation virtual reality\" imageUrl=\"https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/rift.png?raw=true\" ><URLButton url=\"https://www.oculus.com/en-us/rift/\">Open Web URL</URLButton><PostbackButton payload=\"magic payload\">Call Postback</PostbackButton></GenericElement></GenericTemplate></Message>); } }"
+}, {
+  key: "listtemplate",
+  response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><ListTemplate><ListElement title=\"rift\" subtitle=\"next-generation virtual reality\" imageUrl=\"https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/rift.png?raw=true\" ><URLButton url=\"https://www.oculus.com/en-us/rift/\">Open Web URL</URLButton></ListElement><ListElement title=\"touch\" subtitle=\"Your Hands, Now in VR\" imageUrl=\"https://github.com/fbsamples/messenger-platform-samples/blob/master/node/public/assets/touch.png?raw=true\" ><URLButton url=\"https://www.oculus.com/en-us/touch/\">Open Web URL</URLButton></ListElement><URLButton url=\"https://www.oculus.com/en-us/touch/\">Open Web URL</URLButton></ListTemplate></Message>); } }"
 }];

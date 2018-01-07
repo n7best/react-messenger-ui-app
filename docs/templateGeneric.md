@@ -52,6 +52,6 @@ class AwesomeChatBot extends Component {
 | -------- | ---- | ----------- |
 | title | string | The title of the element
 | subtitle | string | The subtitle of the element
-| image_url| string | image url of the element
+| imageUrl| string | image url of the element
 | default_action | Object | action executed when the element is tapped
 

@@ -91,5 +91,13 @@ List of all avaiable you can access through `CONSTANTS` variable.
 
 | Property      | Value
 | --------      | ----
+| HORIZONTAL    | horizontal
+| SQUARE        | square
+
+
+## TOP_ELEMENT_STYLE
+
+| Property      | Value
+| --------      | ----
 | COMPACT       | compact
 | LARGE         | large
