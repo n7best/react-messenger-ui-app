@@ -48,4 +48,7 @@ exports.default = [{
 }, {
   key: "mediatemplate",
   response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><MediaTemplate><MediaElement type={CONSTANTS.MEDIA_TYPE.IMAGE} url=\"https://www.facebook.com/552483055096851/photos/a.552483101763513.1073741825.552483055096851/552484795096677/?type=3&theater\" /></MediaTemplate></Message>); } }"
+}, {
+  key: "opengraphtemplate",
+  response: "class AwesomeChatBot extends Component { render() { const { recipient } = this.props; return (<Message recipient={recipient}><OpenGraphTemplate><OpenGraphElement url=\"https://open.spotify.com/track/7GhIk7Il098yCjg4BQjzvb\"><URLButton url=\"https://en.wikipedia.org/wiki/Rickrolling\">View More</URLButton></OpenGraphElement></OpenGraphTemplate></Message>); } }"
 }];

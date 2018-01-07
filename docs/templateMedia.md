@@ -3,7 +3,7 @@ id: templateMedia
 title: Media Template
 ---
 
-The media template allows you to send a structured message that includes an image or video, and an optional button. Component includes `MediaTemplate` which contains max of 10 `MediaElement`.
+The media template allows you to send a structured message that includes an image or video, and an optional button. Component includes `MediaTemplate` which contains max of 1 `MediaElement`.
 
 ## Example
 

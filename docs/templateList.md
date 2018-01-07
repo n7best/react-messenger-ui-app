@@ -3,7 +3,7 @@ id: templateList
 title: List Template
 ---
 
-The list template allows you to send a structured message with a set of items rendered vertically. Component includes `ListTemplate` which contains max of 10 `ListElement`.
+The list template allows you to send a structured message with a set of items rendered vertically. Component includes `ListTemplate` which contains max of 4 `ListElement`.
 
 ## Example
 

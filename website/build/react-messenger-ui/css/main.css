@@ -1866,3 +1866,16 @@ table thead > tr {
 table thead tr > th {
     color: #fff;
 }
+
+nav.toc .toggleNav .navGroup.navGroupActive {
+    background: #ffffff !important;
+}
+
+.navGroups {
+    border: 1px solid #efefef;
+}
+
+footer.nav-footer {
+    background: #073b6d;
+    box-shadow: inset 0px 18px 13px -5px rgba(0, 0, 0, 0.08);
+}
