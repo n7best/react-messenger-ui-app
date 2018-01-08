@@ -19,7 +19,7 @@ class AuthSuccessful extends React.Component {
 
       if(ref){
         let autoReply = await getRepliesByKey(ref.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
-
+        console.log('found ', autoReply)
         if(autoReply){
           this.setState({
             code: autoReply.response
@@ -32,9 +32,11 @@ class AuthSuccessful extends React.Component {
       const { recipient } = this.props;
       const { isAutoReply, code } = this.state;
 
+      console.log('render auth');
+
       if(isAutoReply){
         return (
-          <EditorReply recipient={recipient} srcCode={code} />
+          <EditorReply recipient={recipient} srcCode={code}/>
         )
       }
 

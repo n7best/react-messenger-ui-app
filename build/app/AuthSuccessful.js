@@ -55,7 +55,7 @@ var AuthSuccessful = function (_React$Component) {
                 ref = this.props.ref;
 
                 if (!ref) {
-                  _context.next = 6;
+                  _context.next = 7;
                   break;
                 }
 
@@ -65,14 +65,14 @@ var AuthSuccessful = function (_React$Component) {
               case 4:
                 autoReply = _context.sent;
 
-
+                console.log('found ', autoReply);
                 if (autoReply) {
                   this.setState({
                     code: autoReply.response
                   });
                 }
 
-              case 6:
+              case 7:
               case 'end':
                 return _context.stop();
             }
@@ -94,6 +94,8 @@ var AuthSuccessful = function (_React$Component) {
           isAutoReply = _state.isAutoReply,
           code = _state.code;
 
+
+      console.log('render auth');
 
       if (isAutoReply) {
         return _react2.default.createElement(_EditorReply2.default, { recipient: recipient, srcCode: code });
