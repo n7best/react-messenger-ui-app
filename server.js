@@ -1,7 +1,8 @@
 import path from 'path';
 import config from 'config';
 import express from 'express';
-import UIBOT from './app';
+import UIBOT from './bot';
+import App from './app';
 
 // credentiasl
 const CREDENTIAL = {
@@ -16,7 +17,19 @@ if (!(CREDENTIAL.APP_SECRET && CREDENTIAL.VALIDATION_TOKEN && CREDENTIAL.PAGE_AC
 }
 
 // app
-const bot = new UIBOT(express(), CREDENTIAL);
+const bot = new UIBOT(express(), CREDENTIAL, {
+  get_start_path: 'BOTPATH:/newuser',
+  echo_path: '/echo',
+  message_path: '/message',
+  attachment_path: '/attachment',
+  webhook_path: '/webhook',
+  menu_path: '/menu',
+  authsucess_path: '/authsuccess',
+  typing_path: '/typing',
+  sendApiUrl: 'https://graph.facebook.com/v2.6/me/messages',
+  profileApiUrl: 'https://graph.facebook.com/v2.6/me/messenger_profile',
+  app: App
+});
 
 // static docs
 bot.server.use(express.static(path.join(__dirname, '../website/build/react-messenger-ui')));

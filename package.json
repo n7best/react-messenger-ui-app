@@ -7,7 +7,9 @@
   "author": "n7best",
   "scripts": {
     "start": "node build/server.js",
-    "build": "NODE_ENV=production babel app -d build/app && NODE_ENV=production babel server.js -d build",
+    "build": "NODE_ENV=production babel server.js -d build && npm run build:app && npm run build:bot",
+    "build:app": "NODE_ENV=production babel app -d build/app",
+    "build:bot": "NODE_ENV=production babel bot -d build/bot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
