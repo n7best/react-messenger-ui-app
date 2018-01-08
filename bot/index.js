@@ -1,17 +1,18 @@
 import 'babel-polyfill';
 import bodyParser from 'body-parser';
 import request from 'request';
-import epilogue from 'epilogue';
-import { hri } from 'human-readable-ids';
 import verifyRequestSignature from './utils/verifyRequestSignature';
-import codeReplies from './codeReplies';
-import {getRepliesByKey, sequelize, Reply } from './db';
+import BotEmitter from './utils/botEmitter';
+import { getRepliesByKey } from './db';
 
-class UIBOT {
+class UIBOT extends BotEmitter{
   constructor(server, credentials, configs){
+    super();
     this.credentials = credentials;
     this.cfg = Object.assign({
-      get_start_path: 'BOTPATH:/newuser',
+      debug: process.env.NODE_ENV === 'development',
+      path_prefix: 'BOTPATH:',
+      get_start_path: '/newuser',
       echo_path: '/echo',
       message_path: '/message',
       attachment_path: '/attachment',
@@ -21,13 +22,35 @@ class UIBOT {
       typing_path: '/typing',
       sendApiUrl: 'https://graph.facebook.com/v2.6/me/messages',
       profileApiUrl: 'https://graph.facebook.com/v2.6/me/messenger_profile',
+      profileConfig: {},
+      sendTypingOnRender: true,
       app: null
     }, configs);
     this.server = server;
     this.server.use(bodyParser.json({
       verify: verifyRequestSignature(this)
     }));
+
+    // debug
+    if(this.cfg.debug){
+      this.initDebug();
+    }
+
     this.initRoutes()
+  }
+
+  initDebug(){
+    this.on('beforeRender', (path, props)=> this.log('Render:', path, props));
+    this.on('afterRender', json => this.log('Render Reply:', JSON.stringify(json, undefined, 4)));
+    this.on('afterStart', port=>this.log('Node server is running on port', port))
+    this.on('sendSuccess', (response, body) => {
+      if (body.message_id) {
+        this.log("Successfully sent message with id %s to recipient %s", body.message_id, body.recipient_id);
+      } else {
+        this.log("Successfully called Send API for recipient %s", body.recipient_id);
+      }
+    })
+    this.on('sendError', (response, body) => this.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error))
   }
 
   initRoutes(){
@@ -38,23 +61,7 @@ class UIBOT {
     // all message routes
     this.server.post(this.cfg.webhook_path, this.webhookPostController.bind(this));
 
-    // resful routes
-    epilogue.initialize({
-      app: this.server,
-      sequelize
-    })
-
-    // Create REST resource
-    const replyResource = epilogue.resource({
-      model: Reply,
-      endpoints: ['/reply', '/reply/:id'],
-      actions: ['create', 'update']
-    });
-
-    replyResource.create.write.before((req,res, context)=> {
-      req.body.key = hri.random().replace(/-/g, ' ');
-      return context.continue;
-    })
+    this.emit('initRoutes');
   }
 
   initMessenger(){
@@ -62,43 +69,43 @@ class UIBOT {
     this.log('Setting menu for the bot');
     this.profile(Object.assign({
       get_started: {
-        payload: this.cfg.get_start_path
+        payload: this.cfg.path_prefix + this.cfg.get_start_path
       }
-    }, this.cfg.app(this.cfg.menu_path)));
+    }, this.cfg.profileConfig, this.cfg.app(this.cfg.menu_path)));
   }
 
-  start() {
+  async start() {
     this.server.set('port', process.env.PORT || 5000);
+    await this.emitSync('beforeStart');
+    // start server
+    this.server.listen(this.server.get('port'), () => {
+      this.initMessenger();
 
-    sequelize.sync({ force: true })
-    .then(()=>{
-        //default data
-        codeReplies.forEach(reply=>Reply.create(reply));
-
-        // start server
-        this.server.listen(this.server.get('port'), () => {
-          this.log('Node server is running on port', this.server.get('port'));
-          this.initMessenger();
-        });
-    })
+      this.emit('afterStart', this.server.get('port'));
+    });
 
   }
 
-  render(path, props, direct = false){
-    this.log('Render:', path, props);
+  render(path, props){
     // typing on
-    this.send(
-      this.cfg.app(this.cfg.typing_path, { recipient: props.recipient, typing: true })
-    );
+    if(this.cfg.sendTypingOnRender){
+      this.send(
+        this.cfg.app(this.cfg.typing_path, { recipient: props.recipient, typing: true })
+      );
+    }
+
+    this.emit('beforeRender', path, props)
     let res = this.cfg.app(path, props);
-    // render(path, props);
-    this.log('Render Reply:', JSON.stringify(res, undefined, 4));
+    this.emit('afterRender', res)
+
     this.send(res);
 
     // typing off
-    this.send(
-      this.cfg.app(this.cfg.typing_path, { recipient: props.recipient, typing: false })
-    );
+    if(this.cfg.sendTypingOnRender){
+      this.send(
+        this.cfg.app(this.cfg.typing_path, { recipient: props.recipient, typing: false })
+      );
+    }
   }
 
   webhookGetController(req, res){
@@ -124,52 +131,19 @@ class UIBOT {
         pageEntry.messaging.forEach(async (messagingEvent) => {
           if (messagingEvent.optin) {
             // receivedAuthentication(messagingEvent);
-            const senderID = messagingEvent.sender.id;
-            const recipientID = messagingEvent.recipient.id;
-            const timeOfAuth = messagingEvent.timestamp;
-            const passThroughParam = messagingEvent.optin.ref;
-
-            this.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
-            if(passThroughParam){
-              let autoReply = await getRepliesByKey(passThroughParam.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
-
-              if(autoReply){
-                return this.render('/editorreply', { recipient: messagingEvent.sender, srcCode: autoReply.response });
-              }
-              this.render(this.cfg.message_path, { recipient: messagingEvent.sender, text: passThroughParam })
-            }else{
-              this.render(this.cfg.authsucess_path, { recipient: messagingEvent.sender })
-            }
-
+            this.optinHandler(messagingEvent);
           } else if (messagingEvent.message) {
             this.messageHandler(messagingEvent);
           } else if (messagingEvent.delivery) {
-            const delivery = messagingEvent.delivery;
-            const messageIDs = delivery.mids;
-            const watermark = delivery.watermark;
-
-            if (messageIDs) {
-              messageIDs.forEach((messageID) => this.log("Received delivery confirmation for message ID: %s", messageID));
-            }
-
-            this.log("All message before %d were delivered.", watermark);
+            this.deliveryHanlder(messagingEvent);
           } else if (messagingEvent.postback) {
             this.postbackHandler(messagingEvent);
           } else if (messagingEvent.read) {
-            // All messages before watermark (a timestamp) or sequence have been seen.
-            const watermark = messagingEvent.read.watermark;
-            const sequenceNumber = messagingEvent.read.seq;
-
-            this.log("Received message read event for watermark %d and sequence number %d", watermark, sequenceNumber);
+            this.readHandler(messagingEvent);
           } else if (messagingEvent.account_linking) {
-            const senderID = messagingEvent.sender.id;
-            const status = messagingEvent.account_linking.status;
-            const authCode = messagingEvent.account_linking.authorization_code;
-
-            this.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
+            this.accountLinkingHanlder(messagingEvent);
           } else if(typeof messagingEvent['policy-enforcement'] !== 'undefined'){
-            let policy = messagingEvent['policy-enforcement'];
-            this.log("Policy-Enforcement: ", policy.action, policy.reason);
+            this.policyHandler(messagingEvent);
           } else {
             this.log("Webhook received unknown messagingEvent: ", messagingEvent);
           }
@@ -183,7 +157,7 @@ class UIBOT {
 
   navigate(payload, sender){
     //check if it's bot path
-    if (payload.substring(0, 8) == "BOTPATH:") {
+    if (payload.substring(0, 8) == this.cfg.path_prefix) {
       let botpath = payload.substring(8);
       this.render(botpath, { recipient: sender })
     }else{
@@ -191,9 +165,60 @@ class UIBOT {
     }
   }
 
+  policyHandler(event){
+    let policy = event['policy-enforcement'];
+    this.log("Policy-Enforcement: ", policy.action, policy.reason);
+  }
+
+  accountLinkingHanlder(event){
+    const senderID = event.sender.id;
+    const status = event.account_linking.status;
+    const authCode = event.account_linking.authorization_code;
+
+    this.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
+  }
+
   postbackHandler(event){
     this.logPostback(event);
     this.navigate(event.postback.payload, event.sender);
+  }
+
+  deliveryHanlder(event){
+    const delivery = event.delivery;
+    const messageIDs = delivery.mids;
+    const watermark = delivery.watermark;
+
+    if (messageIDs) {
+      messageIDs.forEach((messageID) => this.log("Received delivery confirmation for message ID: %s", messageID));
+    }
+
+    this.log("All message before %d were delivered.", watermark);
+  }
+
+  readHandler(event){
+    const watermark = event.read.watermark;
+    const sequenceNumber = event.read.seq;
+
+    this.log("Received message read event for watermark %d and sequence number %d", watermark, sequenceNumber);
+  }
+
+  async optinHandler(event){
+    const senderID = event.sender.id;
+    const recipientID = event.recipient.id;
+    const timeOfAuth = event.timestamp;
+    const passThroughParam = event.optin.ref;
+
+    this.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
+    if(passThroughParam){
+      let autoReply = await getRepliesByKey(passThroughParam.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
+
+      if(autoReply){
+        return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response });
+      }
+      this.render(this.cfg.message_path, { recipient: event.sender, text: passThroughParam })
+    }else{
+      this.render(this.cfg.authsucess_path, { recipient: event.sender })
+    }
   }
 
   async messageHandler(event){
@@ -249,6 +274,7 @@ class UIBOT {
   }
 
   send(data, form = false) {
+    this.emit('beforeSend', data, form)
     request({
       uri: this.cfg.sendApiUrl,
       qs: { access_token: this.credentials.PAGE_ACCESS_TOKEN },
@@ -256,13 +282,9 @@ class UIBOT {
       json: data
     }, (error, response, body) => {
       if (!error && response.statusCode == 200) {
-        if (body.message_id) {
-          this.log("Successfully sent message with id %s to recipient %s", body.message_id, body.recipient_id);
-        } else {
-          this.log("Successfully called Send API for recipient %s", body.recipient_id);
-        }
+        this.emit('sendSuccess', response, body)
       } else {
-        this.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+        this.emit('sendError', response, body)
       }
     });
   }

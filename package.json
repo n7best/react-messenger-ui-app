@@ -13,7 +13,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "async": "~0.2.8",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -30,6 +29,7 @@
     "human-readable-ids": "^1.0.3",
     "pg": "^6.4.2",
     "pg-hstore": "^2.3.2",
+    "promise-waterfall": "^0.1.0",
     "react-messenger-ui": "0.0.16",
     "react-router": "^4.2.0",
     "request": "^2.83.0",

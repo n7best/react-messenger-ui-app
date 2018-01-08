@@ -1,8 +1,12 @@
 import path from 'path';
 import config from 'config';
 import express from 'express';
+import epilogue from 'epilogue';
+import { hri } from 'human-readable-ids';
 import UIBOT from './bot';
 import App from './app';
+import seed from './seed';
+import {getRepliesByKey, sequelize, Reply } from './db';
 
 // credentiasl
 const CREDENTIAL = {
@@ -16,9 +20,11 @@ if (!(CREDENTIAL.APP_SECRET && CREDENTIAL.VALIDATION_TOKEN && CREDENTIAL.PAGE_AC
   process.exit(1);
 }
 
-// app
+// initialize bot
 const bot = new UIBOT(express(), CREDENTIAL, {
-  get_start_path: 'BOTPATH:/newuser',
+  // defaults
+  path_prefix: 'BOTPATH:',
+  get_start_path: '/newuser',
   echo_path: '/echo',
   message_path: '/message',
   attachment_path: '/attachment',
@@ -28,10 +34,39 @@ const bot = new UIBOT(express(), CREDENTIAL, {
   typing_path: '/typing',
   sendApiUrl: 'https://graph.facebook.com/v2.6/me/messages',
   profileApiUrl: 'https://graph.facebook.com/v2.6/me/messenger_profile',
+  // Your react App
   app: App
 });
 
-// static docs
+// static documentation website
 bot.server.use(express.static(path.join(__dirname, '../website/build/react-messenger-ui')));
+
+// Create REST resource for custom codes
+bot.once('initRoutes', ()=>{
+    // resful routes
+    epilogue.initialize({
+      app: bot.server,
+      sequelize
+    })
+
+    const replyResource = epilogue.resource({
+      model: Reply,
+      endpoints: ['/reply', '/reply/:id'],
+      actions: ['create', 'update']
+    });
+
+    replyResource.create.write.before((req,res, context)=> {
+      req.body.key = hri.random().replace(/-/g, ' ');
+      return context.continue;
+    })
+})
+
+// seed db
+bot.onSync('beforeStart', async ()=>{
+  await sequelize.sync({ force: true })
+  console.log('test start')
+  await Promise.all(seed.map(async reply=>await Reply.create(reply)))
+  console.log('finish seed')
+})
 
 bot.start();
