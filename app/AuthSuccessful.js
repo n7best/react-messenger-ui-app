@@ -15,10 +15,10 @@ class AuthSuccessful extends React.Component {
     }
 
     async componentWillMount(){
-      const { ref } = this.props;
-      console.log('called component will mount', ref);
-      if(ref){
-        let autoReply = await getRepliesByKey(ref.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
+      const { params } = this.props;
+      console.log('called component will mount', params);
+      if(params){
+        let autoReply = await getRepliesByKey(params.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
         console.log('found ', autoReply)
         if(autoReply){
           this.setState({
@@ -30,10 +30,10 @@ class AuthSuccessful extends React.Component {
     }
 
     render(){
-      const { recipient, ref } = this.props;
+      const { recipient, params } = this.props;
       const { isAutoReply, code } = this.state;
 
-      console.log('render auth', ref, this.props);
+      console.log('render auth', params, this.props);
 
       if(isAutoReply){
         return (

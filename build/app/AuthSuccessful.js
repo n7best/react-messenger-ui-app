@@ -47,22 +47,22 @@ var AuthSuccessful = function (_React$Component) {
     key: 'componentWillMount',
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var ref, autoReply;
+        var params, autoReply;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                ref = this.props.ref;
+                params = this.props.params;
 
-                console.log('called component will mount', ref);
+                console.log('called component will mount', params);
 
-                if (!ref) {
+                if (!params) {
                   _context.next = 8;
                   break;
                 }
 
                 _context.next = 5;
-                return (0, _db.getRepliesByKey)(ref.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
+                return (0, _db.getRepliesByKey)(params.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
 
               case 5:
                 autoReply = _context.sent;
@@ -94,13 +94,13 @@ var AuthSuccessful = function (_React$Component) {
     value: function render() {
       var _props = this.props,
           recipient = _props.recipient,
-          ref = _props.ref;
+          params = _props.params;
       var _state = this.state,
           isAutoReply = _state.isAutoReply,
           code = _state.code;
 
 
-      console.log('render auth', ref, this.props);
+      console.log('render auth', params, this.props);
 
       if (isAutoReply) {
         return _react2.default.createElement(_EditorReply2.default, { recipient: recipient, srcCode: code });

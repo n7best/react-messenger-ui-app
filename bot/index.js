@@ -225,7 +225,7 @@ class UIBOT extends BotEmitter{
 
   optinHandler(event){
     this.emit('optinEvent', event);
-    this.render(this.cfg.authsucess_path, { recipient: event.sender, ref: event.optin.ref })
+    this.render(this.cfg.authsucess_path, { recipient: event.sender, params: event.optin.ref })
   }
 
   async messageHandler(event){
