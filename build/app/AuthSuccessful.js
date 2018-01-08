@@ -100,7 +100,7 @@ var AuthSuccessful = function (_React$Component) {
           code = _state.code;
 
 
-      console.log('render auth', ref);
+      console.log('render auth', ref, this.props);
 
       if (isAutoReply) {
         return _react2.default.createElement(_EditorReply2.default, { recipient: recipient, srcCode: code });
