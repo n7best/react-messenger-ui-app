@@ -16,7 +16,7 @@ class AuthSuccessful extends React.Component {
 
     async componentWillMount(){
       const { ref } = this.props;
-
+      console.log('called component will mount');
       if(ref){
         let autoReply = await getRepliesByKey(ref.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
         console.log('found ', autoReply)
@@ -41,9 +41,9 @@ class AuthSuccessful extends React.Component {
       }
 
       return (
-          <Message recipient={recipient}>
-             <Text>Authentication successful</Text>
-          </Message>
+        <Message recipient={recipient}>
+           <Text>Authentication successful</Text>
+        </Message>
       )
     }
 }

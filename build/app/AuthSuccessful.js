@@ -54,15 +54,17 @@ var AuthSuccessful = function (_React$Component) {
               case 0:
                 ref = this.props.ref;
 
+                console.log('called component will mount');
+
                 if (!ref) {
-                  _context.next = 7;
+                  _context.next = 8;
                   break;
                 }
 
-                _context.next = 4;
+                _context.next = 5;
                 return (0, _db.getRepliesByKey)(ref.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
 
-              case 4:
+              case 5:
                 autoReply = _context.sent;
 
                 console.log('found ', autoReply);
@@ -72,7 +74,7 @@ var AuthSuccessful = function (_React$Component) {
                   });
                 }
 
-              case 7:
+              case 8:
               case 'end':
                 return _context.stop();
             }
