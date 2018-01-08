@@ -51,6 +51,29 @@ class UIBOT extends BotEmitter{
       }
     })
     this.on('sendError', (response, body) => this.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error))
+    this.on('echo', message =>this.log("Received echo for message", message));
+    this.on('quickReply', message =>  this.log("Quick reply for message %s with payload %s", message.mid, message.quick_reply) )
+    this.on('messageEvent', event=>this.logMessage(event));
+    this.on('optinEvent', event=>{
+      const senderID = event.sender.id;
+      const recipientID = event.recipient.id;
+      const timeOfAuth = event.timestamp;
+      const passThroughParam = event.optin.ref;
+
+      this.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
+    })
+
+    this.on('readEvent', event => {
+      const watermark = event.read.watermark;
+      const sequenceNumber = event.read.seq;
+
+      this.log("Received message read event for watermark %d and sequence number %d", watermark, sequenceNumber);
+    })
+
+    this.on('delivery', delivery => this.log("Received delivery confirmation for message ID: %s", delivery.messageID) )
+    this.on('postbackEvent', event=> this.logPostback(event));
+    this.on('validateToken', token => this.log("Validated webhook"));
+    this.on('policy', policy => this.log("Policy-Enforcement: ", policy.action, policy.reason))
   }
 
   initRoutes(){
@@ -65,13 +88,14 @@ class UIBOT extends BotEmitter{
   }
 
   initMessenger(){
-    // send menu
-    this.log('Setting menu for the bot');
-    this.profile(Object.assign({
+    let configs = Object.assign({
       get_started: {
         payload: this.cfg.path_prefix + this.cfg.get_start_path
       }
-    }, this.cfg.profileConfig, this.cfg.app(this.cfg.menu_path)));
+    }, this.cfg.profileConfig, this.cfg.app(this.cfg.menu_path))
+
+    this.emit('beforeInitMessenger', configs)
+    this.profile(configs);
   }
 
   async start() {
@@ -83,7 +107,6 @@ class UIBOT extends BotEmitter{
 
       this.emit('afterStart', this.server.get('port'));
     });
-
   }
 
   render(path, props){
@@ -110,13 +133,13 @@ class UIBOT extends BotEmitter{
 
   webhookGetController(req, res){
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === this.credentials.VALIDATION_TOKEN) {
-        this.log("Validated webhook");
-        res.status(200).send(req.query['hub.challenge']);
-      } else {
-        this.error("Failed validation. Make sure the validation tokens match.");
-        res.sendStatus(403);
-      }
+      req.query['hub.verify_token'] === this.credentials.VALIDATION_TOKEN) {
+      this.emit('validateToken', req.query['hub.verify_token']);
+      res.status(200).send(req.query['hub.challenge']);
+    } else {
+      this.error("Failed validation. Make sure the validation tokens match.");
+      res.sendStatus(403);
+    }
   }
 
   webhookPostController(req, res){
@@ -156,6 +179,7 @@ class UIBOT extends BotEmitter{
   }
 
   navigate(payload, sender){
+    this.emit('navigate', payload, sender);
     //check if it's bot path
     if (payload.substring(0, 8) == this.cfg.path_prefix) {
       let botpath = payload.substring(8);
@@ -167,7 +191,7 @@ class UIBOT extends BotEmitter{
 
   policyHandler(event){
     let policy = event['policy-enforcement'];
-    this.log("Policy-Enforcement: ", policy.action, policy.reason);
+    this.emit('policy', policy)
   }
 
   accountLinkingHanlder(event){
@@ -179,7 +203,7 @@ class UIBOT extends BotEmitter{
   }
 
   postbackHandler(event){
-    this.logPostback(event);
+    this.emit('postbackEvent', event);
     this.navigate(event.postback.payload, event.sender);
   }
 
@@ -189,48 +213,31 @@ class UIBOT extends BotEmitter{
     const watermark = delivery.watermark;
 
     if (messageIDs) {
-      messageIDs.forEach((messageID) => this.log("Received delivery confirmation for message ID: %s", messageID));
+      messageIDs.forEach((messageID) => this.emit('delivery', delivery));
     }
 
     this.log("All message before %d were delivered.", watermark);
   }
 
   readHandler(event){
-    const watermark = event.read.watermark;
-    const sequenceNumber = event.read.seq;
-
-    this.log("Received message read event for watermark %d and sequence number %d", watermark, sequenceNumber);
+    this.emit('readEvent', event);
   }
 
-  async optinHandler(event){
-    const senderID = event.sender.id;
-    const recipientID = event.recipient.id;
-    const timeOfAuth = event.timestamp;
-    const passThroughParam = event.optin.ref;
-
-    this.log("Received authentication for user %d and page %d with pass through param '%s' at %d", senderID, recipientID, passThroughParam, timeOfAuth);
-    if(passThroughParam){
-      let autoReply = await getRepliesByKey(passThroughParam.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
-
-      if(autoReply){
-        return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response });
-      }
-      this.render(this.cfg.message_path, { recipient: event.sender, text: passThroughParam })
-    }else{
-      this.render(this.cfg.authsucess_path, { recipient: event.sender })
-    }
+  optinHandler(event){
+    this.emit('optinEvent', event);
+    this.render(this.cfg.authsucess_path, { recipient: event.sender, ref: event.optin.ref })
   }
 
   async messageHandler(event){
-    this.logMessage(event);
+    this.emit('messageEvent', event);
     const message = event.message;
 
     // special cases
     if (message.is_echo) {
-      this.log("Received echo for message", message);
+      this.emit('echo', message)
       return this.render(this.cfg.echo_path, { recipient: event.sender, ...message })
     } else if (message.quick_reply) {
-      this.log("Quick reply for message %s with payload %s", message.mid, message.quick_reply);
+      this.emit('quickReply', message)
       return this.navigate(message.quick_reply.payload, event.sender);
     }
 
@@ -240,6 +247,8 @@ class UIBOT extends BotEmitter{
       if(autoReply){
         return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response });
       }
+
+      this.emit('message', message)
 
       return this.render(this.cfg.message_path, { recipient: event.sender, text: message.text });
     } else if (message.attachments) {
