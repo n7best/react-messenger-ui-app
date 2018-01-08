@@ -16,12 +16,13 @@ class AuthSuccessful extends React.Component {
 
     async componentWillMount(){
       const { ref } = this.props;
-      console.log('called component will mount');
+      console.log('called component will mount', ref);
       if(ref){
         let autoReply = await getRepliesByKey(ref.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
         console.log('found ', autoReply)
         if(autoReply){
           this.setState({
+            isAutoReply: true,
             code: autoReply.response
           })
         }
