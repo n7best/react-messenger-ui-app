@@ -33,7 +33,7 @@ class AuthSuccessful extends React.Component {
       const { recipient, ref } = this.props;
       const { isAutoReply, code } = this.state;
 
-      console.log('render auth', ref);
+      console.log('render auth', ref, this.props);
 
       if(isAutoReply){
         return (
