@@ -54,7 +54,7 @@ var AuthSuccessful = function (_React$Component) {
               case 0:
                 ref = this.props.ref;
 
-                console.log('called component will mount');
+                console.log('called component will mount', ref);
 
                 if (!ref) {
                   _context.next = 8;
@@ -70,6 +70,7 @@ var AuthSuccessful = function (_React$Component) {
                 console.log('found ', autoReply);
                 if (autoReply) {
                   this.setState({
+                    isAutoReply: true,
                     code: autoReply.response
                   });
                 }
@@ -91,13 +92,15 @@ var AuthSuccessful = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var recipient = this.props.recipient;
+      var _props = this.props,
+          recipient = _props.recipient,
+          ref = _props.ref;
       var _state = this.state,
           isAutoReply = _state.isAutoReply,
           code = _state.code;
 
 
-      console.log('render auth');
+      console.log('render auth', ref);
 
       if (isAutoReply) {
         return _react2.default.createElement(_EditorReply2.default, { recipient: recipient, srcCode: code });
