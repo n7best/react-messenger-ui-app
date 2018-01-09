@@ -19,8 +19,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var AuthSuccessful = function AuthSuccessful(props) {
   var recipient = props.recipient,
       autoReply = props.autoReply;
-
-  console.log('auth success', recipient, props);
+  // console.log('auth success',  recipient, props)
 
   if (autoReply) {
     return _react2.default.createElement(_EditorReply2.default, { recipient: recipient, srcCode: autoReply.response });

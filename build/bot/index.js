@@ -139,6 +139,13 @@ var UIBOT = function (_BotEmitter) {
       this.on('policy', function (policy) {
         return _this2.log("Policy-Enforcement: ", policy.action, policy.reason);
       });
+      this.on('accountLinkEvent', function (event) {
+        var senderID = event.sender.id;
+        var status = event.account_linking.status;
+        var authCode = event.account_linking.authorization_code;
+
+        _this2.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
+      });
     }
   }, {
     key: 'initRoutes',
@@ -329,19 +336,14 @@ var UIBOT = function (_BotEmitter) {
     key: 'accountLinkingHanlder',
     value: function () {
       var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(event) {
-        var senderID, status, authCode;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                senderID = event.sender.id;
-                status = event.account_linking.status;
-                authCode = event.account_linking.authorization_code;
+                _context4.next = 2;
+                return this.emitSync('accountLinkEvent', event);
 
-
-                this.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
-
-              case 4:
+              case 2:
               case 'end':
                 return _context4.stop();
             }

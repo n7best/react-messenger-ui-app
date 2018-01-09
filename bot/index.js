@@ -74,6 +74,13 @@ class UIBOT extends BotEmitter{
     this.on('postbackEvent', event=> this.logPostback(event));
     this.on('validateToken', token => this.log("Validated webhook"));
     this.on('policy', policy => this.log("Policy-Enforcement: ", policy.action, policy.reason))
+    this.on('accountLinkEvent', event=> {
+      const senderID = event.sender.id;
+      const status = event.account_linking.status;
+      const authCode = event.account_linking.authorization_code;
+
+      this.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
+    })
   }
 
   initRoutes(){
@@ -195,11 +202,7 @@ class UIBOT extends BotEmitter{
   }
 
   async accountLinkingHanlder(event){
-    const senderID = event.sender.id;
-    const status = event.account_linking.status;
-    const authCode = event.account_linking.authorization_code;
-
-    this.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
+    await this.emitSync('accountLinkEvent', event);
   }
 
   async postbackHandler(event){
