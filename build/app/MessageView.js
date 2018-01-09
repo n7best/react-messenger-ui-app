@@ -10,11 +10,16 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactMessengerUi = require('react-messenger-ui');
 
+var _EditorReply = require('./EditorReply');
+
+var _EditorReply2 = _interopRequireDefault(_EditorReply);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var MessageView = function MessageView(props) {
-  var recipient = props.recipient,
-      text = props.text;
+var MessageView = function MessageView(_ref) {
+  var recipient = _ref.recipient,
+      text = _ref.text,
+      autoReply = _ref.autoReply;
 
 
   switch (text.replace(/[^\w\s]/gi, '').trim().toLowerCase()) {
@@ -270,6 +275,9 @@ var MessageView = function MessageView(props) {
       );
 
     default:
+      if (autoReply) {
+        return _react2.default.createElement(_EditorReply2.default, { recipient: recipient, srcCode: autoReply.response });
+      }
       return _react2.default.createElement(
         _reactMessengerUi.Message,
         { recipient: recipient },

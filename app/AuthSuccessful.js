@@ -2,9 +2,7 @@ import React from 'react';
 import { Message, Text } from 'react-messenger-ui';
 import EditorReply from './EditorReply';
 
-const AuthSuccessful = (props) => {
-    const { recipient, autoReply } = props;
-    // console.log('auth success',  recipient, props)
+const AuthSuccessful = ({ recipient, autoReply }) => {
 
     if(autoReply){
       return (

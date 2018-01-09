@@ -76,4 +76,10 @@ bot.onSync('optinEvent', async event => {
    if(autoReply) event.optin.autoReply = autoReply;
 })
 
+bot.onSync('message', async message => {
+   const autoReply = await getRepliesByKey(message.text.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
+   console.log('auto reply:', autoReply);
+   if(autoReply) message.autoReply = autoReply;
+})
+
 bot.start();

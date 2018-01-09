@@ -167,4 +167,33 @@ bot.onSync('optinEvent', function () {
   };
 }());
 
+bot.onSync('message', function () {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(message) {
+    var autoReply;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.next = 2;
+            return (0, _db.getRepliesByKey)(message.text.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
+
+          case 2:
+            autoReply = _context4.sent;
+
+            console.log('auto reply:', autoReply);
+            if (autoReply) message.autoReply = autoReply;
+
+          case 5:
+          case 'end':
+            return _context4.stop();
+        }
+      }
+    }, _callee4, undefined);
+  }));
+
+  return function (_x3) {
+    return _ref4.apply(this, arguments);
+  };
+}());
+
 bot.start();

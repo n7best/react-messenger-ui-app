@@ -2,10 +2,9 @@ import React from 'react';
 import { Message, Text, ButtonTemplate, GenericTemplate, GenericElement, ListTemplate, ListElement,
 ReceiptTemplate, ReceiptElement, Summary, Adjustment, Address, MediaTemplate, MediaElement, URLButton,
 OpenGraphTemplate, OpenGraphElement, PostbackButton, CallButton, Attachment, QuickReply, CONSTANTS } from 'react-messenger-ui';
+import EditorReply from './EditorReply';
 
-const MessageView = (props) => {
-
-  const { recipient, text } = props;
+const MessageView = ({ recipient, text, autoReply }) => {
 
   switch (text.replace(/[^\w\s]/gi, '').trim().toLowerCase()) {
     case 'image':
@@ -212,6 +211,11 @@ const MessageView = (props) => {
       )
 
     default:
+      if(autoReply){
+        return (
+          <EditorReply recipient={recipient} srcCode={autoReply.response}/>
+        )
+      }
       return (
         <Message recipient={recipient}>
           <Text>{ text }</Text>

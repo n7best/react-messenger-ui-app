@@ -245,17 +245,11 @@ class UIBOT extends BotEmitter{
     }
 
     if (message.text) {
-      let autoReply = await getRepliesByKey(message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase());
-
-      if(autoReply){
-        return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response });
-      }
-
       await this.emitSync('message', message)
 
-      return this.render(this.cfg.message_path, { recipient: event.sender, text: message.text });
+      return this.render(this.cfg.message_path, { recipient: event.sender, ...message });
     } else if (message.attachments) {
-      return this.render(this.cfg.attachment_path, { recipient: event.sender, text: message.text });
+      return this.render(this.cfg.attachment_path, { recipient: event.sender, ...message });
     }
   }
 

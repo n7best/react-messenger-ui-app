@@ -501,7 +501,7 @@ var UIBOT = function (_BotEmitter) {
     key: 'messageHandler',
     value: function () {
       var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(event) {
-        var message, autoReply;
+        var message;
         return regeneratorRuntime.wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
@@ -539,39 +539,25 @@ var UIBOT = function (_BotEmitter) {
 
               case 13:
                 if (!message.text) {
-                  _context10.next = 24;
-                  break;
-                }
-
-                _context10.next = 16;
-                return (0, _db.getRepliesByKey)(message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase());
-
-              case 16:
-                autoReply = _context10.sent;
-
-                if (!autoReply) {
                   _context10.next = 19;
                   break;
                 }
 
-                return _context10.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response }));
-
-              case 19:
-                _context10.next = 21;
+                _context10.next = 16;
                 return this.emitSync('message', message);
 
-              case 21:
-                return _context10.abrupt('return', this.render(this.cfg.message_path, { recipient: event.sender, text: message.text }));
+              case 16:
+                return _context10.abrupt('return', this.render(this.cfg.message_path, _extends({ recipient: event.sender }, message)));
 
-              case 24:
+              case 19:
                 if (!message.attachments) {
-                  _context10.next = 26;
+                  _context10.next = 21;
                   break;
                 }
 
-                return _context10.abrupt('return', this.render(this.cfg.attachment_path, { recipient: event.sender, text: message.text }));
+                return _context10.abrupt('return', this.render(this.cfg.attachment_path, _extends({ recipient: event.sender }, message)));
 
-              case 26:
+              case 21:
               case 'end':
                 return _context10.stop();
             }
