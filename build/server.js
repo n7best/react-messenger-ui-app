@@ -70,10 +70,10 @@ var bot = new _bot2.default((0, _express2.default)(), CREDENTIAL, {
 bot.server.use(_express2.default.static(_path2.default.join(__dirname, '../website/build/react-messenger-ui')));
 
 // Create REST resource for custom codes
-bot.once('initRoutes', function () {
+bot.on('initRoutes', function (server) {
   // resful routes
   _epilogue2.default.initialize({
-    app: bot.server,
+    app: server,
     sequelize: _db.sequelize
   });
 

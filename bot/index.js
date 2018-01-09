@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 import request from 'request';
 import verifyRequestSignature from './utils/verifyRequestSignature';
 import BotEmitter from './utils/botEmitter';
-import { getRepliesByKey } from './db';
 
 class UIBOT extends BotEmitter{
   constructor(server, credentials, configs){
@@ -91,7 +90,7 @@ class UIBOT extends BotEmitter{
     // all message routes
     this.server.post(this.cfg.webhook_path, this.webhookPostController.bind(this));
 
-    this.emit('initRoutes');
+    this.emit('initRoutes', this.server);
   }
 
   initMessenger(){

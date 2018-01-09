@@ -42,10 +42,10 @@ const bot = new UIBOT(express(), CREDENTIAL, {
 bot.server.use(express.static(path.join(__dirname, '../website/build/react-messenger-ui')));
 
 // Create REST resource for custom codes
-bot.once('initRoutes', ()=>{
+bot.on('initRoutes', server=>{
     // resful routes
     epilogue.initialize({
-      app: bot.server,
+      app: server,
       sequelize
     })
 
