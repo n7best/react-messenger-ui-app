@@ -151,9 +151,10 @@ bot.onSync('optinEvent', function () {
           case 2:
             autoReply = _context3.sent;
 
+            console.log('auto reply:', autoReply);
             if (autoReply) event.optin.autoReply = autoReply;
 
-          case 4:
+          case 5:
           case 'end':
             return _context3.stop();
         }

@@ -72,6 +72,7 @@ bot.onSync('beforeStart', async ()=>{
 // dynamic coding
 bot.onSync('optinEvent', async event => {
    const autoReply = await getRepliesByKey(event.optin.ref.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
+   console.log('auto reply:', autoReply);
    if(autoReply) event.optin.autoReply = autoReply;
 })
 
