@@ -66,9 +66,6 @@ var bot = new _bot2.default((0, _express2.default)(), CREDENTIAL, {
   app: _app2.default
 });
 
-// static documentation website
-bot.server.use(_express2.default.static(_path2.default.join(__dirname, '../website/build/react-messenger-ui')));
-
 // Create REST resource for custom codes
 bot.on('initRoutes', function (server) {
   // resful routes
@@ -88,6 +85,9 @@ bot.on('initRoutes', function (server) {
     return context.continue;
   });
 });
+
+// static documentation website
+bot.server.use(_express2.default.static(_path2.default.join(__dirname, '../website/build/react-messenger-ui')));
 
 // seed db
 bot.onSync('beforeStart', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {

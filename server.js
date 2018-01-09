@@ -38,9 +38,6 @@ const bot = new UIBOT(express(), CREDENTIAL, {
   app: App
 });
 
-// static documentation website
-bot.server.use(express.static(path.join(__dirname, '../website/build/react-messenger-ui')));
-
 // Create REST resource for custom codes
 bot.on('initRoutes', server=>{
     // resful routes
@@ -60,6 +57,9 @@ bot.on('initRoutes', server=>{
       return context.continue;
     })
 })
+
+// static documentation website
+bot.server.use(express.static(path.join(__dirname, '../website/build/react-messenger-ui')));
 
 // seed db
 bot.onSync('beforeStart', async ()=>{
