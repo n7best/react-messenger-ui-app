@@ -189,12 +189,12 @@ class UIBOT extends BotEmitter{
     }
   }
 
-  policyHandler(event){
+  async policyHandler(event){
     let policy = event['policy-enforcement'];
-    this.emit('policy', policy)
+    this.emitSync('policy', policy)
   }
 
-  accountLinkingHanlder(event){
+  async accountLinkingHanlder(event){
     const senderID = event.sender.id;
     const status = event.account_linking.status;
     const authCode = event.account_linking.authorization_code;
@@ -202,42 +202,42 @@ class UIBOT extends BotEmitter{
     this.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
   }
 
-  postbackHandler(event){
-    this.emit('postbackEvent', event);
+  async postbackHandler(event){
+    this.emitSync('postbackEvent', event);
     this.navigate(event.postback.payload, event.sender);
   }
 
-  deliveryHanlder(event){
+  async deliveryHanlder(event){
     const delivery = event.delivery;
     const messageIDs = delivery.mids;
     const watermark = delivery.watermark;
 
     if (messageIDs) {
-      messageIDs.forEach((messageID) => this.emit('delivery', delivery));
+      messageIDs.forEach((messageID) => this.emitSync('delivery', delivery));
     }
 
     this.log("All message before %d were delivered.", watermark);
   }
 
-  readHandler(event){
-    this.emit('readEvent', event);
+  async readHandler(event){
+    this.emitSync('readEvent', event);
   }
 
-  optinHandler(event){
+  async optinHandler(event){
     this.emitSync('optinEvent', event);
     this.render(this.cfg.authsucess_path, { recipient: event.sender, ...event.optin })
   }
 
   async messageHandler(event){
-    this.emit('messageEvent', event);
+    this.emitSync('messageEvent', event);
     const message = event.message;
 
     // special cases
     if (message.is_echo) {
-      this.emit('echo', message)
+      this.emitSync('echo', message)
       return this.render(this.cfg.echo_path, { recipient: event.sender, ...message })
     } else if (message.quick_reply) {
-      this.emit('quickReply', message)
+      this.emitSync('quickReply', message)
       return this.navigate(message.quick_reply.payload, event.sender);
     }
 
@@ -248,7 +248,7 @@ class UIBOT extends BotEmitter{
         return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response });
       }
 
-      this.emit('message', message)
+      this.emitSync('message', message)
 
       return this.render(this.cfg.message_path, { recipient: event.sender, text: message.text });
     } else if (message.attachments) {

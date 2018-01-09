@@ -300,118 +300,18 @@ var UIBOT = function (_BotEmitter) {
     }
   }, {
     key: 'policyHandler',
-    value: function policyHandler(event) {
-      var policy = event['policy-enforcement'];
-      this.emit('policy', policy);
-    }
-  }, {
-    key: 'accountLinkingHanlder',
-    value: function accountLinkingHanlder(event) {
-      var senderID = event.sender.id;
-      var status = event.account_linking.status;
-      var authCode = event.account_linking.authorization_code;
-
-      this.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
-    }
-  }, {
-    key: 'postbackHandler',
-    value: function postbackHandler(event) {
-      this.emit('postbackEvent', event);
-      this.navigate(event.postback.payload, event.sender);
-    }
-  }, {
-    key: 'deliveryHanlder',
-    value: function deliveryHanlder(event) {
-      var _this5 = this;
-
-      var delivery = event.delivery;
-      var messageIDs = delivery.mids;
-      var watermark = delivery.watermark;
-
-      if (messageIDs) {
-        messageIDs.forEach(function (messageID) {
-          return _this5.emit('delivery', delivery);
-        });
-      }
-
-      this.log("All message before %d were delivered.", watermark);
-    }
-  }, {
-    key: 'readHandler',
-    value: function readHandler(event) {
-      this.emit('readEvent', event);
-    }
-  }, {
-    key: 'optinHandler',
-    value: function optinHandler(event) {
-      this.emitSync('optinEvent', event);
-      this.render(this.cfg.authsucess_path, _extends({ recipient: event.sender }, event.optin));
-    }
-  }, {
-    key: 'messageHandler',
     value: function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(event) {
-        var message, autoReply;
+        var policy;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                this.emit('messageEvent', event);
-                message = event.message;
+                policy = event['policy-enforcement'];
 
-                // special cases
+                this.emitSync('policy', policy);
 
-                if (!message.is_echo) {
-                  _context3.next = 7;
-                  break;
-                }
-
-                this.emit('echo', message);
-                return _context3.abrupt('return', this.render(this.cfg.echo_path, _extends({ recipient: event.sender }, message)));
-
-              case 7:
-                if (!message.quick_reply) {
-                  _context3.next = 10;
-                  break;
-                }
-
-                this.emit('quickReply', message);
-                return _context3.abrupt('return', this.navigate(message.quick_reply.payload, event.sender));
-
-              case 10:
-                if (!message.text) {
-                  _context3.next = 20;
-                  break;
-                }
-
-                _context3.next = 13;
-                return (0, _db.getRepliesByKey)(message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase());
-
-              case 13:
-                autoReply = _context3.sent;
-
-                if (!autoReply) {
-                  _context3.next = 16;
-                  break;
-                }
-
-                return _context3.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response }));
-
-              case 16:
-
-                this.emit('message', message);
-
-                return _context3.abrupt('return', this.render(this.cfg.message_path, { recipient: event.sender, text: message.text }));
-
-              case 20:
-                if (!message.attachments) {
-                  _context3.next = 22;
-                  break;
-                }
-
-                return _context3.abrupt('return', this.render(this.cfg.attachment_path, { recipient: event.sender, text: message.text }));
-
-              case 22:
+              case 2:
               case 'end':
                 return _context3.stop();
             }
@@ -419,8 +319,228 @@ var UIBOT = function (_BotEmitter) {
         }, _callee3, this);
       }));
 
-      function messageHandler(_x2) {
+      function policyHandler(_x2) {
         return _ref3.apply(this, arguments);
+      }
+
+      return policyHandler;
+    }()
+  }, {
+    key: 'accountLinkingHanlder',
+    value: function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(event) {
+        var senderID, status, authCode;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                senderID = event.sender.id;
+                status = event.account_linking.status;
+                authCode = event.account_linking.authorization_code;
+
+
+                this.log("Received account link event with for user %d with status %s and auth code %s ", senderID, status, authCode);
+
+              case 4:
+              case 'end':
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function accountLinkingHanlder(_x3) {
+        return _ref4.apply(this, arguments);
+      }
+
+      return accountLinkingHanlder;
+    }()
+  }, {
+    key: 'postbackHandler',
+    value: function () {
+      var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(event) {
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                this.emitSync('postbackEvent', event);
+                this.navigate(event.postback.payload, event.sender);
+
+              case 2:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function postbackHandler(_x4) {
+        return _ref5.apply(this, arguments);
+      }
+
+      return postbackHandler;
+    }()
+  }, {
+    key: 'deliveryHanlder',
+    value: function () {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(event) {
+        var _this5 = this;
+
+        var delivery, messageIDs, watermark;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                delivery = event.delivery;
+                messageIDs = delivery.mids;
+                watermark = delivery.watermark;
+
+
+                if (messageIDs) {
+                  messageIDs.forEach(function (messageID) {
+                    return _this5.emitSync('delivery', delivery);
+                  });
+                }
+
+                this.log("All message before %d were delivered.", watermark);
+
+              case 5:
+              case 'end':
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      }));
+
+      function deliveryHanlder(_x5) {
+        return _ref6.apply(this, arguments);
+      }
+
+      return deliveryHanlder;
+    }()
+  }, {
+    key: 'readHandler',
+    value: function () {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(event) {
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                this.emitSync('readEvent', event);
+
+              case 1:
+              case 'end':
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this);
+      }));
+
+      function readHandler(_x6) {
+        return _ref7.apply(this, arguments);
+      }
+
+      return readHandler;
+    }()
+  }, {
+    key: 'optinHandler',
+    value: function () {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(event) {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                this.emitSync('optinEvent', event);
+                this.render(this.cfg.authsucess_path, _extends({ recipient: event.sender }, event.optin));
+
+              case 2:
+              case 'end':
+                return _context8.stop();
+            }
+          }
+        }, _callee8, this);
+      }));
+
+      function optinHandler(_x7) {
+        return _ref8.apply(this, arguments);
+      }
+
+      return optinHandler;
+    }()
+  }, {
+    key: 'messageHandler',
+    value: function () {
+      var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(event) {
+        var message, autoReply;
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                this.emitSync('messageEvent', event);
+                message = event.message;
+
+                // special cases
+
+                if (!message.is_echo) {
+                  _context9.next = 7;
+                  break;
+                }
+
+                this.emitSync('echo', message);
+                return _context9.abrupt('return', this.render(this.cfg.echo_path, _extends({ recipient: event.sender }, message)));
+
+              case 7:
+                if (!message.quick_reply) {
+                  _context9.next = 10;
+                  break;
+                }
+
+                this.emitSync('quickReply', message);
+                return _context9.abrupt('return', this.navigate(message.quick_reply.payload, event.sender));
+
+              case 10:
+                if (!message.text) {
+                  _context9.next = 20;
+                  break;
+                }
+
+                _context9.next = 13;
+                return (0, _db.getRepliesByKey)(message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase());
+
+              case 13:
+                autoReply = _context9.sent;
+
+                if (!autoReply) {
+                  _context9.next = 16;
+                  break;
+                }
+
+                return _context9.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response }));
+
+              case 16:
+
+                this.emitSync('message', message);
+
+                return _context9.abrupt('return', this.render(this.cfg.message_path, { recipient: event.sender, text: message.text }));
+
+              case 20:
+                if (!message.attachments) {
+                  _context9.next = 22;
+                  break;
+                }
+
+                return _context9.abrupt('return', this.render(this.cfg.attachment_path, { recipient: event.sender, text: message.text }));
+
+              case 22:
+              case 'end':
+                return _context9.stop();
+            }
+          }
+        }, _callee9, this);
+      }));
+
+      function messageHandler(_x8) {
+        return _ref9.apply(this, arguments);
       }
 
       return messageHandler;
