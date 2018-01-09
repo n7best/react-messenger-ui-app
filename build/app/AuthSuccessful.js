@@ -30,14 +30,17 @@ var AuthSuccessful = function () {
           case 0:
             _props = undefined.props, recipient = _props.recipient, autoReply = _props.autoReply;
 
+
+            console.log('auth success', undefined.props);
+
             if (!autoReply) {
-              _context.next = 3;
+              _context.next = 4;
               break;
             }
 
             return _context.abrupt('return', _react2.default.createElement(_EditorReply2.default, { recipient: recipient, srcCode: autoReply.response }));
 
-          case 3:
+          case 4:
             return _context.abrupt('return', _react2.default.createElement(
               _reactMessengerUi.Message,
               { recipient: recipient },
@@ -48,7 +51,7 @@ var AuthSuccessful = function () {
               )
             ));
 
-          case 4:
+          case 5:
           case 'end':
             return _context.stop();
         }

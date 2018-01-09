@@ -7,6 +7,8 @@ import EditorReply from './EditorReply';
 const AuthSuccessful = async (props) => {
     const { recipient, autoReply } = this.props;
 
+    console.log('auth success', this.props)
+
     if(autoReply){
       return (
         <EditorReply recipient={recipient} srcCode={autoReply.response}/>
