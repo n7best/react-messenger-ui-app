@@ -12,6 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var verifyRequestSignature = function verifyRequestSignature(app) {
   return function (req, res, buf) {
+    if (req.path !== app.cfg.webhook_path) return;
     var signature = req.headers["x-hub-signature"];
 
     if (!signature) {

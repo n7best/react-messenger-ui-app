@@ -2,6 +2,7 @@ import crypto from 'crypto';
 
 const verifyRequestSignature = (app) =>
   (req, res, buf) => {
+    if ( req.path !== app.cfg.webhook_path) return;
     const signature = req.headers["x-hub-signature"];
 
     if (!signature) {
