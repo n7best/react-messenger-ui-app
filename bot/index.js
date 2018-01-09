@@ -34,8 +34,6 @@ class UIBOT extends BotEmitter{
     if(this.cfg.debug){
       this.initDebug();
     }
-
-    this.initRoutes()
   }
 
   initDebug(){
@@ -89,7 +87,6 @@ class UIBOT extends BotEmitter{
     this.server.get(this.cfg.webhook_path, this.webhookGetController.bind(this));
     // all message routes
     this.server.post(this.cfg.webhook_path, this.webhookPostController.bind(this));
-
     this.emit('initRoutes', this.server);
   }
 
@@ -105,6 +102,7 @@ class UIBOT extends BotEmitter{
   }
 
   async start() {
+    this.initRoutes()
     this.server.set('port', process.env.PORT || 5000);
     await this.emitSync('beforeStart');
     // start server

@@ -71,8 +71,6 @@ var UIBOT = function (_BotEmitter) {
     if (_this.cfg.debug) {
       _this.initDebug();
     }
-
-    _this.initRoutes();
     return _this;
   }
 
@@ -154,7 +152,6 @@ var UIBOT = function (_BotEmitter) {
       this.server.get(this.cfg.webhook_path, this.webhookGetController.bind(this));
       // all message routes
       this.server.post(this.cfg.webhook_path, this.webhookPostController.bind(this));
-
       this.emit('initRoutes', this.server);
     }
   }, {
@@ -179,11 +176,12 @@ var UIBOT = function (_BotEmitter) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                this.initRoutes();
                 this.server.set('port', process.env.PORT || 5000);
-                _context.next = 3;
+                _context.next = 4;
                 return this.emitSync('beforeStart');
 
-              case 3:
+              case 4:
                 // start server
                 this.server.listen(this.server.get('port'), function () {
                   _this3.initMessenger();
@@ -191,7 +189,7 @@ var UIBOT = function (_BotEmitter) {
                   _this3.emit('afterStart', _this3.server.get('port'));
                 });
 
-              case 4:
+              case 5:
               case 'end':
                 return _context.stop();
             }

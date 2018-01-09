@@ -38,25 +38,6 @@ const bot = new UIBOT(express(), CREDENTIAL, {
   app: App
 });
 
-// Create REST resource for custom codes
-bot.on('initRoutes', server=>{
-    // resful routes
-    epilogue.initialize({
-      app: server,
-      sequelize
-    })
-
-    const replyResource = epilogue.resource({
-      model: Reply,
-      endpoints: ['/reply', '/reply/:id'],
-      actions: ['create', 'update']
-    });
-
-    replyResource.create.write.before((req,res, context)=> {
-      req.body.key = hri.random().replace(/-/g, ' ');
-      return context.continue;
-    })
-})
 
 // static documentation website
 bot.server.use(express.static(path.join(__dirname, '../website/build/react-messenger-ui')));
@@ -80,6 +61,27 @@ bot.onSync('message', async message => {
    const autoReply = await getRepliesByKey(message.text.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
    console.log('auto reply:', autoReply);
    if(autoReply) message.autoReply = autoReply;
+})
+
+// Create REST resource for dynamic codes
+bot.on('initRoutes', server=>{
+
+    // resful routes
+    epilogue.initialize({
+      app: server,
+      sequelize
+    })
+
+    const replyResource = epilogue.resource({
+      model: Reply,
+      endpoints: ['/reply', '/reply/:id'],
+      actions: ['create', 'update']
+    });
+
+    replyResource.create.write.before((req,res, context)=> {
+      req.body.key = hri.random().replace(/-/g, ' ');
+      return context.continue;
+    })
 })
 
 bot.start();

@@ -66,26 +66,6 @@ var bot = new _bot2.default((0, _express2.default)(), CREDENTIAL, {
   app: _app2.default
 });
 
-// Create REST resource for custom codes
-bot.on('initRoutes', function (server) {
-  // resful routes
-  _epilogue2.default.initialize({
-    app: server,
-    sequelize: _db.sequelize
-  });
-
-  var replyResource = _epilogue2.default.resource({
-    model: _db.Reply,
-    endpoints: ['/reply', '/reply/:id'],
-    actions: ['create', 'update']
-  });
-
-  replyResource.create.write.before(function (req, res, context) {
-    req.body.key = _humanReadableIds.hri.random().replace(/-/g, ' ');
-    return context.continue;
-  });
-});
-
 // static documentation website
 bot.server.use(_express2.default.static(_path2.default.join(__dirname, '../website/build/react-messenger-ui')));
 
@@ -195,5 +175,26 @@ bot.onSync('message', function () {
     return _ref4.apply(this, arguments);
   };
 }());
+
+// Create REST resource for dynamic codes
+bot.on('initRoutes', function (server) {
+
+  // resful routes
+  _epilogue2.default.initialize({
+    app: server,
+    sequelize: _db.sequelize
+  });
+
+  var replyResource = _epilogue2.default.resource({
+    model: _db.Reply,
+    endpoints: ['/reply', '/reply/:id'],
+    actions: ['create', 'update']
+  });
+
+  replyResource.create.write.before(function (req, res, context) {
+    req.body.key = _humanReadableIds.hri.random().replace(/-/g, ' ');
+    return context.continue;
+  });
+});
 
 bot.start();
