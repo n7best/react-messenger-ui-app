@@ -31,49 +31,49 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var AuthSuccessful = function (_React$Component) {
   _inherits(AuthSuccessful, _React$Component);
 
-  function AuthSuccessful(props) {
+  function AuthSuccessful() {
     _classCallCheck(this, AuthSuccessful);
 
-    var _this = _possibleConstructorReturn(this, (AuthSuccessful.__proto__ || Object.getPrototypeOf(AuthSuccessful)).call(this, props));
-
-    _this.state = {
-      isAutoReply: false,
-      code: false
-    };
-    return _this;
+    return _possibleConstructorReturn(this, (AuthSuccessful.__proto__ || Object.getPrototypeOf(AuthSuccessful)).apply(this, arguments));
   }
 
   _createClass(AuthSuccessful, [{
-    key: 'componentWillMount',
+    key: 'render',
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var params, autoReply;
+        var _props, recipient, params, autoReply;
+
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                params = this.props.params;
+                _props = this.props, recipient = _props.recipient, params = _props.params;
+                _context.next = 3;
+                return (0, _db.getRepliesByKey)(params.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
 
-                console.log('called component will mount', params);
+              case 3:
+                autoReply = _context.sent;
 
-                if (!params) {
-                  _context.next = 8;
+
+                console.log('render auth', params, this.props, autoReply);
+
+                if (!autoReply) {
+                  _context.next = 7;
                   break;
                 }
 
-                _context.next = 5;
-                return (0, _db.getRepliesByKey)(params.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
+                return _context.abrupt('return', _react2.default.createElement(_EditorReply2.default, { recipient: recipient, srcCode: autoReply.response }));
 
-              case 5:
-                autoReply = _context.sent;
-
-                console.log('found ', autoReply);
-                if (autoReply) {
-                  this.setState({
-                    isAutoReply: true,
-                    code: autoReply.response
-                  });
-                }
+              case 7:
+                return _context.abrupt('return', _react2.default.createElement(
+                  _reactMessengerUi.Message,
+                  { recipient: recipient },
+                  _react2.default.createElement(
+                    _reactMessengerUi.Text,
+                    null,
+                    'Authentication successful'
+                  )
+                ));
 
               case 8:
               case 'end':
@@ -83,39 +83,12 @@ var AuthSuccessful = function (_React$Component) {
         }, _callee, this);
       }));
 
-      function componentWillMount() {
+      function render() {
         return _ref.apply(this, arguments);
       }
 
-      return componentWillMount;
+      return render;
     }()
-  }, {
-    key: 'render',
-    value: function render() {
-      var _props = this.props,
-          recipient = _props.recipient,
-          params = _props.params;
-      var _state = this.state,
-          isAutoReply = _state.isAutoReply,
-          code = _state.code;
-
-
-      console.log('render auth', params, this.props);
-
-      if (isAutoReply) {
-        return _react2.default.createElement(_EditorReply2.default, { recipient: recipient, srcCode: code });
-      }
-
-      return _react2.default.createElement(
-        _reactMessengerUi.Message,
-        { recipient: recipient },
-        _react2.default.createElement(
-          _reactMessengerUi.Text,
-          null,
-          'Authentication successful'
-        )
-      );
-    }
   }]);
 
   return AuthSuccessful;
