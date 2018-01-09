@@ -308,10 +308,10 @@ var UIBOT = function (_BotEmitter) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 policy = event['policy-enforcement'];
+                _context3.next = 3;
+                return this.emitSync('policy', policy);
 
-                this.emitSync('policy', policy);
-
-              case 2:
+              case 3:
               case 'end':
                 return _context3.stop();
             }
@@ -363,10 +363,13 @@ var UIBOT = function (_BotEmitter) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                this.emitSync('postbackEvent', event);
-                this.navigate(event.postback.payload, event.sender);
+                _context5.next = 2;
+                return this.emitSync('postbackEvent', event);
 
               case 2:
+                this.navigate(event.postback.payload, event.sender);
+
+              case 3:
               case 'end':
                 return _context5.stop();
             }
@@ -383,13 +386,13 @@ var UIBOT = function (_BotEmitter) {
   }, {
     key: 'deliveryHanlder',
     value: function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(event) {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(event) {
         var _this5 = this;
 
         var delivery, messageIDs, watermark;
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
                 delivery = event.delivery;
                 messageIDs = delivery.mids;
@@ -397,19 +400,40 @@ var UIBOT = function (_BotEmitter) {
 
 
                 if (messageIDs) {
-                  messageIDs.forEach(function (messageID) {
-                    return _this5.emitSync('delivery', delivery);
-                  });
+                  messageIDs.forEach(function () {
+                    var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(messageID) {
+                      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                        while (1) {
+                          switch (_context6.prev = _context6.next) {
+                            case 0:
+                              _context6.next = 2;
+                              return _this5.emitSync('delivery', delivery);
+
+                            case 2:
+                              return _context6.abrupt('return', _context6.sent);
+
+                            case 3:
+                            case 'end':
+                              return _context6.stop();
+                          }
+                        }
+                      }, _callee6, _this5);
+                    }));
+
+                    return function (_x6) {
+                      return _ref7.apply(this, arguments);
+                    };
+                  }());
                 }
 
                 this.log("All message before %d were delivered.", watermark);
 
               case 5:
               case 'end':
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6, this);
+        }, _callee7, this);
       }));
 
       function deliveryHanlder(_x5) {
@@ -421,37 +445,13 @@ var UIBOT = function (_BotEmitter) {
   }, {
     key: 'readHandler',
     value: function () {
-      var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(event) {
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
-          while (1) {
-            switch (_context7.prev = _context7.next) {
-              case 0:
-                this.emitSync('readEvent', event);
-
-              case 1:
-              case 'end':
-                return _context7.stop();
-            }
-          }
-        }, _callee7, this);
-      }));
-
-      function readHandler(_x6) {
-        return _ref7.apply(this, arguments);
-      }
-
-      return readHandler;
-    }()
-  }, {
-    key: 'optinHandler',
-    value: function () {
       var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(event) {
         return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                this.emitSync('optinEvent', event);
-                this.render(this.cfg.authsucess_path, _extends({ recipient: event.sender }, event.optin));
+                _context8.next = 2;
+                return this.emitSync('readEvent', event);
 
               case 2:
               case 'end':
@@ -461,77 +461,27 @@ var UIBOT = function (_BotEmitter) {
         }, _callee8, this);
       }));
 
-      function optinHandler(_x7) {
+      function readHandler(_x7) {
         return _ref8.apply(this, arguments);
       }
 
-      return optinHandler;
+      return readHandler;
     }()
   }, {
-    key: 'messageHandler',
+    key: 'optinHandler',
     value: function () {
       var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(event) {
-        var message, autoReply;
         return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
-                this.emitSync('messageEvent', event);
-                message = event.message;
+                _context9.next = 2;
+                return this.emitSync('optinEvent', event);
 
-                // special cases
+              case 2:
+                this.render(this.cfg.authsucess_path, _extends({ recipient: event.sender }, event.optin));
 
-                if (!message.is_echo) {
-                  _context9.next = 7;
-                  break;
-                }
-
-                this.emitSync('echo', message);
-                return _context9.abrupt('return', this.render(this.cfg.echo_path, _extends({ recipient: event.sender }, message)));
-
-              case 7:
-                if (!message.quick_reply) {
-                  _context9.next = 10;
-                  break;
-                }
-
-                this.emitSync('quickReply', message);
-                return _context9.abrupt('return', this.navigate(message.quick_reply.payload, event.sender));
-
-              case 10:
-                if (!message.text) {
-                  _context9.next = 20;
-                  break;
-                }
-
-                _context9.next = 13;
-                return (0, _db.getRepliesByKey)(message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase());
-
-              case 13:
-                autoReply = _context9.sent;
-
-                if (!autoReply) {
-                  _context9.next = 16;
-                  break;
-                }
-
-                return _context9.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response }));
-
-              case 16:
-
-                this.emitSync('message', message);
-
-                return _context9.abrupt('return', this.render(this.cfg.message_path, { recipient: event.sender, text: message.text }));
-
-              case 20:
-                if (!message.attachments) {
-                  _context9.next = 22;
-                  break;
-                }
-
-                return _context9.abrupt('return', this.render(this.cfg.attachment_path, { recipient: event.sender, text: message.text }));
-
-              case 22:
+              case 3:
               case 'end':
                 return _context9.stop();
             }
@@ -539,8 +489,96 @@ var UIBOT = function (_BotEmitter) {
         }, _callee9, this);
       }));
 
-      function messageHandler(_x8) {
+      function optinHandler(_x8) {
         return _ref9.apply(this, arguments);
+      }
+
+      return optinHandler;
+    }()
+  }, {
+    key: 'messageHandler',
+    value: function () {
+      var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(event) {
+        var message, autoReply;
+        return regeneratorRuntime.wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                _context10.next = 2;
+                return this.emitSync('messageEvent', event);
+
+              case 2:
+                message = event.message;
+
+                // special cases
+
+                if (!message.is_echo) {
+                  _context10.next = 9;
+                  break;
+                }
+
+                _context10.next = 6;
+                return this.emitSync('echo', message);
+
+              case 6:
+                return _context10.abrupt('return', this.render(this.cfg.echo_path, _extends({ recipient: event.sender }, message)));
+
+              case 9:
+                if (!message.quick_reply) {
+                  _context10.next = 13;
+                  break;
+                }
+
+                _context10.next = 12;
+                return this.emitSync('quickReply', message);
+
+              case 12:
+                return _context10.abrupt('return', this.navigate(message.quick_reply.payload, event.sender));
+
+              case 13:
+                if (!message.text) {
+                  _context10.next = 24;
+                  break;
+                }
+
+                _context10.next = 16;
+                return (0, _db.getRepliesByKey)(message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase());
+
+              case 16:
+                autoReply = _context10.sent;
+
+                if (!autoReply) {
+                  _context10.next = 19;
+                  break;
+                }
+
+                return _context10.abrupt('return', this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response }));
+
+              case 19:
+                _context10.next = 21;
+                return this.emitSync('message', message);
+
+              case 21:
+                return _context10.abrupt('return', this.render(this.cfg.message_path, { recipient: event.sender, text: message.text }));
+
+              case 24:
+                if (!message.attachments) {
+                  _context10.next = 26;
+                  break;
+                }
+
+                return _context10.abrupt('return', this.render(this.cfg.attachment_path, { recipient: event.sender, text: message.text }));
+
+              case 26:
+              case 'end':
+                return _context10.stop();
+            }
+          }
+        }, _callee10, this);
+      }));
+
+      function messageHandler(_x9) {
+        return _ref10.apply(this, arguments);
       }
 
       return messageHandler;

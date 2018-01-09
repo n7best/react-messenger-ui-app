@@ -191,7 +191,7 @@ class UIBOT extends BotEmitter{
 
   async policyHandler(event){
     let policy = event['policy-enforcement'];
-    this.emitSync('policy', policy)
+    await this.emitSync('policy', policy)
   }
 
   async accountLinkingHanlder(event){
@@ -203,7 +203,7 @@ class UIBOT extends BotEmitter{
   }
 
   async postbackHandler(event){
-    this.emitSync('postbackEvent', event);
+    await this.emitSync('postbackEvent', event);
     this.navigate(event.postback.payload, event.sender);
   }
 
@@ -213,31 +213,31 @@ class UIBOT extends BotEmitter{
     const watermark = delivery.watermark;
 
     if (messageIDs) {
-      messageIDs.forEach((messageID) => this.emitSync('delivery', delivery));
+      messageIDs.forEach(async(messageID) => await this.emitSync('delivery', delivery));
     }
 
     this.log("All message before %d were delivered.", watermark);
   }
 
   async readHandler(event){
-    this.emitSync('readEvent', event);
+    await this.emitSync('readEvent', event);
   }
 
   async optinHandler(event){
-    this.emitSync('optinEvent', event);
+    await this.emitSync('optinEvent', event);
     this.render(this.cfg.authsucess_path, { recipient: event.sender, ...event.optin })
   }
 
   async messageHandler(event){
-    this.emitSync('messageEvent', event);
+    await this.emitSync('messageEvent', event);
     const message = event.message;
 
     // special cases
     if (message.is_echo) {
-      this.emitSync('echo', message)
+      await this.emitSync('echo', message)
       return this.render(this.cfg.echo_path, { recipient: event.sender, ...message })
     } else if (message.quick_reply) {
-      this.emitSync('quickReply', message)
+      await this.emitSync('quickReply', message)
       return this.navigate(message.quick_reply.payload, event.sender);
     }
 
@@ -248,7 +248,7 @@ class UIBOT extends BotEmitter{
         return this.render('/editorreply', { recipient: event.sender, srcCode: autoReply.response });
       }
 
-      this.emitSync('message', message)
+      await this.emitSync('message', message)
 
       return this.render(this.cfg.message_path, { recipient: event.sender, text: message.text });
     } else if (message.attachments) {
