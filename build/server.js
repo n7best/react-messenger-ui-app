@@ -137,4 +137,33 @@ bot.onSync('beforeStart', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mar
   }, _callee2, undefined);
 })));
 
+// dynamic coding
+bot.onSync('optinEvent', function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(event) {
+    var autoReply;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return (0, _db.getRepliesByKey)(event.optin.ref.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
+
+          case 2:
+            autoReply = _context3.sent;
+
+            if (autoReply) event.optin.autoReply = autoReply;
+
+          case 4:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, _callee3, undefined);
+  }));
+
+  return function (_x2) {
+    return _ref3.apply(this, arguments);
+  };
+}());
+
 bot.start();

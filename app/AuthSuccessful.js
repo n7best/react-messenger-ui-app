@@ -2,14 +2,10 @@ import React from 'react';
 import {asyncReactor} from 'async-reactor';
 import { Message, Text } from 'react-messenger-ui';
 import EditorReply from './EditorReply';
-import { getRepliesByKey } from '../db';
+
 
 const AuthSuccessful = async (props) => {
-    const { recipient, params } = this.props;
-
-    const autoReply = await getRepliesByKey(params.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
-
-    console.log('render auth', params, this.props, autoReply);
+    const { recipient, autoReply } = this.props;
 
     if(autoReply){
       return (

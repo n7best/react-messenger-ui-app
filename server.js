@@ -69,4 +69,10 @@ bot.onSync('beforeStart', async ()=>{
   console.log('finish seed')
 })
 
+// dynamic coding
+bot.onSync('optinEvent', async event => {
+   const autoReply = await getRepliesByKey(event.optin.ref.replace(/-/g, ' ').replace(/[^\w\s]/gi, '').trim().toLowerCase());
+   if(autoReply) event.optin.autoReply = autoReply;
+})
+
 bot.start();
