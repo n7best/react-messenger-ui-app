@@ -8,6 +8,8 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _asyncReactor = require('async-reactor');
+
 var _reactMessengerUi = require('react-messenger-ui');
 
 var _EditorReply = require('./EditorReply');
@@ -68,4 +70,4 @@ var AuthSuccessful = function () {
     return _ref.apply(this, arguments);
   };
 }();
-exports.default = AuthSuccessful;
+exports.default = (0, _asyncReactor.asyncReactor)(AuthSuccessful);

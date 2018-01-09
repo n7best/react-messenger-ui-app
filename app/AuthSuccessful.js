@@ -1,4 +1,5 @@
 import React from 'react';
+import {asyncReactor} from 'async-reactor';
 import { Message, Text } from 'react-messenger-ui';
 import EditorReply from './EditorReply';
 import { getRepliesByKey } from '../db';
@@ -22,4 +23,4 @@ const AuthSuccessful = async (props) => {
       </Message>
     )
 }
-export default AuthSuccessful;
+export default asyncReactor(AuthSuccessful);
