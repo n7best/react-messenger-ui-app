@@ -3,10 +3,9 @@ import { Message, Text } from 'react-messenger-ui';
 import EditorReply from './EditorReply';
 
 
-const AuthSuccessful = async (props) => {
-    const { recipient, autoReply } = this.props;
+const AuthSuccessful = ({ recipient, autoReply }) => {
 
-    console.log('auth success', this.props)
+    console.log('auth success',  recipient, autoReply)
 
     if(autoReply){
       return (
